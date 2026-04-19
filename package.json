@@ -1,0 +1,84 @@
+{
+	"name": "vscode-rhai-support",
+	"displayName": "Rhai highlighting, outline and language configuration",
+	"description": "Syntax highlighting, outline and language configuration for Rhai scripts",
+	"version": "2026.1.2",
+	"publisher": "jhenriotaliaslemeran81",
+	"author": {
+		"name": "jhenriot alias lemeran81"
+	},
+	"license": "MIT",
+	"icon": "icons/rhai-light.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HenriotJerome/jhen-vscode-rhai.git"
+	},
+	"engines": {
+		"vscode": "^1.85.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"rhai",
+		"scripting",
+		"rust"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"languages": [
+			{
+				"id": "rhai",
+				"aliases": [
+					"Rhai",
+					"rhai"
+				],
+				"extensions": [
+					".rhai"
+				],
+				"configuration": "./language-configuration.json",
+				"icon": {
+					"light": "./icons/rhai-light.png",
+					"dark": "./icons/rhai-light.png"
+				}
+			}
+		],
+		"grammars": [
+			{
+				"language": "rhai",
+				"scopeName": "source.rhai",
+				"path": "./syntaxes/rhai.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "rhai",
+				"path": "./snippets/rhai.json"
+			}
+		],
+		"configuration": {
+			"title": "Rhai",
+			"properties": {
+				"rhai.format.enable": {
+					"type": "boolean",
+					"default": true,
+					"description": "Active le formateur Rhai (Shift+Alt+F)"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"package": "npx vsce package",
+		"publish": "npx vsce publish",
+		"publish:ovsx": "ovsx publish"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.85.0",
+		"@types/node": "^20.0.0",
+		"typescript": "^5.3.0",
+		"@vscode/vsce": "^3.0.0"
+	}
+}

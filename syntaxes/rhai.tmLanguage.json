@@ -1,0 +1,263 @@
+{
+	"name": "Rhai",
+	"scopeName": "source.rhai",
+	"patterns": [
+		{ "include": "#doc-comments" },
+		{ "include": "#comments" },
+		{ "include": "#shebang" },
+		{ "include": "#strings" },
+		{ "include": "#closure" },
+		{ "include": "#object-map" },
+		{ "include": "#keywords" },
+		{ "include": "#constants" },
+		{ "include": "#numbers" },
+		{ "include": "#functions" },
+		{ "include": "#function-call" },
+		{ "include": "#module-access" },
+		{ "include": "#punctuation" }
+	],
+	"repository": {
+		"doc-comments": {
+			"patterns": [
+				{
+					"name": "comment.line.documentation.rhai",
+					"match": "///.*$"
+				},
+				{
+					"name": "comment.line.documentation.rhai",
+					"match": "//!.*$"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.block.rhai",
+					"begin": "/\\*",
+					"end": "\\*/",
+					"captures": {
+						"0": { "name": "punctuation.definition.comment.rhai" }
+					}
+				},
+				{
+					"name": "comment.line.double-slash.rhai",
+					"match": "(?<!/)//((?!/).*)$",
+					"captures": {
+						"1": { "name": "comment.line.double-slash.rhai" }
+					}
+				}
+			]
+		},
+		"shebang": {
+			"match": "\\A#!.*$",
+			"name": "comment.line.shebang.rhai"
+		},
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.rhai",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"name": "constant.character.escape.rhai",
+							"match": "\\\\."
+						},
+						{
+							"name": "meta.template.expression.rhai",
+							"begin": "\\$\\{",
+							"end": "\\}",
+							"beginCaptures": { "0": { "name": "punctuation.definition.template-expression.begin.rhai" } },
+							"endCaptures": { "0": { "name": "punctuation.definition.template-expression.end.rhai" } },
+							"patterns": [
+								{ "include": "#keywords" },
+								{ "include": "#constants" },
+								{ "include": "#numbers" },
+								{ "include": "#function-call" },
+								{ "include": "#module-access" }
+							]
+						}
+					]
+				},
+				{
+					"name": "string.quoted.single.rhai",
+					"begin": "'",
+					"end": "'",
+					"patterns": [
+						{
+							"name": "constant.character.escape.rhai",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"name": "string.quoted.template.rhai",
+					"begin": "`",
+					"end": "`",
+					"patterns": [
+						{
+							"name": "constant.character.escape.rhai",
+							"match": "\\\\."
+						},
+						{
+							"name": "meta.template.expression.rhai",
+							"begin": "\\$\\{",
+							"end": "\\}",
+							"beginCaptures": { "0": { "name": "punctuation.definition.template-expression.begin.rhai" } },
+							"endCaptures": { "0": { "name": "punctuation.definition.template-expression.end.rhai" } },
+							"patterns": [
+								{ "include": "#keywords" },
+								{ "include": "#constants" },
+								{ "include": "#numbers" },
+								{ "include": "#function-call" },
+								{ "include": "#module-access" }
+							]
+						}
+					]
+				}
+			]
+		},
+		"closure": {
+			"patterns": [
+				{
+					"match": "\\|",
+					"name": "keyword.operator.closure.rhai"
+				}
+			]
+		},
+		"object-map": {
+			"patterns": [
+				{
+					"match": "#\\{",
+					"name": "punctuation.definition.map.begin.rhai"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.import.rhai",
+					"match": "\\b(import|as|export)\\b"
+				},
+				{
+					"name": "keyword.control.flow.rhai",
+					"match": "\\b(if|else|for|in|while|loop|do|switch|break|continue|return|throw|try|catch)\\b"
+				},
+				{
+					"name": "keyword.declaration.rhai",
+					"match": "\\b(let|const|fn|private)\\b"
+				},
+				{
+					"name": "keyword.operator.logical.rhai",
+					"match": "\\b(and|or|not|is|is_empty|is_undefined)\\b"
+				},
+				{
+					"name": "keyword.other.rhai",
+					"match": "\\b(this|true|false)\\b"
+				},
+				{
+					"name": "keyword.control.type.rhai",
+					"match": "\\b(type_of)\\b"
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.language.rhai",
+					"match": "\\b(true|false)\\b"
+				},
+				{
+					"name": "constant.language.null.rhai",
+					"match": "(?=\\b)\\(\\)(?=\\b)"
+				},
+				{
+					"name": "variable.other.constant.rhai",
+					"match": "\\b[A-Z][A-Z0-9_]*\\b"
+				}
+			]
+		},
+		"numbers": {
+			"patterns": [
+				{
+					"name": "constant.numeric.float.rhai",
+					"match": "\\b[0-9]+\\.[0-9]+(?:[eE][+-]?[0-9]+)?\\b"
+				},
+				{
+					"name": "constant.numeric.integer.rhai",
+					"match": "\\b[0-9]+(?:_[0-9]+)*\\b"
+				},
+				{
+					"name": "constant.numeric.hex.rhai",
+					"match": "\\b0x[0-9a-fA-F]+\\b"
+				},
+				{
+					"name": "constant.numeric.binary.rhai",
+					"match": "\\b0b[01]+\\b"
+				},
+				{
+					"name": "constant.numeric.octal.rhai",
+					"match": "\\b0o[0-7]+\\b"
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"name": "meta.function.definition.rhai",
+					"match": "\\b(fn)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": { "name": "keyword.declaration.function.rhai" },
+						"2": { "name": "entity.name.function.rhai" }
+					}
+				}
+			]
+		},
+		"function-call": {
+			"patterns": [
+				{
+					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()",
+					"captures": {
+						"1": { "name": "entity.name.function.call.rhai" }
+					}
+				}
+			]
+		},
+		"module-access": {
+			"patterns": [
+				{
+					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*::",
+					"captures": {
+						"1": { "name": "entity.name.module.rhai" }
+					}
+				},
+				{
+					"match": "::\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": { "name": "entity.name.function.member.rhai" }
+					}
+				}
+			]
+		},
+		"punctuation": {
+			"patterns": [
+				{
+					"match": ",",
+					"name": "punctuation.separator.comma.rhai"
+				},
+				{
+					"match": ";",
+					"name": "punctuation.terminator.semicolon.rhai"
+				},
+				{
+					"match": "\\.",
+					"name": "punctuation.accessor.dot.rhai"
+				},
+				{
+					"match": ":",
+					"name": "punctuation.separator.key-value.rhai"
+				}
+			]
+		}
+	}
+}
