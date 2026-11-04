@@ -125,6 +125,16 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 💡 Complétion
+
+| Contexte | Suggestions |
+|---|---|
+| Identifiant | Fonctions et constantes du fichier, fonctions natives de l'hôte (avec signature), mots-clés |
+| `alias::` | Fonctions et constantes publiques du module importé |
+| `#{` | Clés de map déjà utilisées dans le fichier |
+
+Aucune proposition dans les commentaires ni les chaînes. `:` est un caractère déclencheur : `u:` ouvre directement la liste du module.
+
 ### 🩺 Diagnostics
 
 L'extension analyse vos scripts et signale les problèmes à la frappe (debounce 300 ms) :

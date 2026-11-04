@@ -130,6 +130,10 @@ export class NativeApiIndex {
 		return this.functions.get(name) ?? [];
 	}
 
+	getNames(): string[] {
+		return [...this.functions.keys()];
+	}
+
 	getDefinitionLocations(name: string): NativeDefinitionLocation[] {
 		return this.locations.get(name) ?? [];
 	}

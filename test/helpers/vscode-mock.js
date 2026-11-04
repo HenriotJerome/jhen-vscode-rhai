@@ -217,6 +217,7 @@ function createVscodeMock() {
 			registerDefinitionProvider() {},
 			registerHoverProvider() {},
 			registerCodeActionsProvider() {},
+			registerCompletionItemProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -240,6 +241,16 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		CompletionItemKind: { Text: 0, Method: 1, Function: 2, Field: 4, Variable: 5, Class: 6, Module: 8, Keyword: 13, Constant: 20 },
+		CompletionItem: class CompletionItem {
+			constructor(label, kind) {
+				this.label = label;
+				this.kind = kind;
+				this.detail = undefined;
+				this.documentation = undefined;
+				this.insertText = undefined;
+			}
+		},
 		Diagnostic: class Diagnostic {
 			constructor(range, message, severity) {
 				this.range = range;

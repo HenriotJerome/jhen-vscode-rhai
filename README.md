@@ -125,6 +125,16 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 💡 Completion
+
+| Context | Suggestions |
+|---|---|
+| Identifier | Functions and constants of the file, host native functions (with signature), keywords |
+| `alias::` | Public functions and constants of the imported module |
+| `#{` | Map keys already used in the file |
+
+Nothing is suggested inside comments or strings. `:` is a trigger character, so `u:` opens the module list directly.
+
 ### 🩺 Diagnostics
 
 The extension parses your scripts and reports problems as you type (300 ms debounce):

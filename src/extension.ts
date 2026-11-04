@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { NativeApiIndex, registerNativeApiWatcher } from './host/nativeApi';
 import { RhaiCodeActionProvider } from './features/codeActions';
+import { RhaiCompletionProvider } from './features/completion';
 import { RhaiDefinitionProvider } from './features/definition';
 import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
@@ -51,6 +52,13 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerCompletionItemProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiCompletionProvider(nativeApi),
+			':'
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider(
 			{ language: 'rhai', scheme: 'file' },
