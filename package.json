@@ -2,7 +2,7 @@
 	"name": "vscode-rhai-support",
 	"displayName": "Rhai highlighting, outline and language configuration",
 	"description": "Syntax highlighting, outline and language configuration for Rhai scripts",
-	"version": "2026.2.2",
+	"version": "2026.3.1",
 	"publisher": "jhenriotaliaslemeran81",
 	"author": {
 		"name": "jhenriot alias lemeran81"
@@ -68,6 +68,26 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Recherche les modules importés et les définitions (fonctions, constantes) dans les sous-répertoires du workspace pour la navigation inter-fichiers"
+				},
+				"rhai.navigation.nativeApi": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"**/rhai-defs/api.json"
+					],
+					"description": "Fichiers JSON de définitions des fonctions natives Rust (hover)"
+				},
+				"rhai.navigation.nativeDefinitions": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [
+						"**/rhai-defs/api.d.rhai"
+					],
+					"description": "Fichiers .d.rhai de définitions des fonctions natives Rust (Ctrl+Click)"
 				}
 			}
 		}

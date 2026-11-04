@@ -2,6 +2,22 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.3.1] - 2026-11-04
+
+### ✨ Ajouts
+
+- **Fonctions natives Rust** : Le survol affiche la documentation des fonctions exposées par le moteur Rust (`api.json`) — toutes les surcharges, les arguments, le type de retour et les doc comments, avec le badge 🔧
+- **Ctrl+Click vers les déclarations natives** : Navigue vers la ligne correspondante dans `api.d.rhai`
+- **Deux nouveaux réglages** : `rhai.navigation.nativeApi` et `rhai.navigation.nativeDefinitions` (globs, défauts `**/rhai-defs/api.json` et `**/rhai-defs/api.d.rhai`)
+- **Rechargement à chaud** : un `FileSystemWatcher` invalide l'index dès que les artefacts sont régénérés, sans recharger la fenêtre
+
+### 🔄 Changements
+
+- **Ordre de résolution du hover** : alias d'import → `module::fonction` → fonction du fichier courant → **native Rust** → fonction native Rhai générique. La documentation du projet prime désormais sur la carte 🔷 pour les noms communs (`replace`, `get`, `set`, `min`, `max`, `floor`…)
+- **Priorité de navigation** : une définition de script prime toujours sur une native homonyme
+
+---
+
 ## [2026.2.2] - 2026-11-04
 
 ### 🔄 Changements

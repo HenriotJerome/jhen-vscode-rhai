@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2026.2.2-blue.svg)
+![Version](https://img.shields.io/badge/version-2026.3.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.126+-orange.svg)
 [![Open VSX](https://img.shields.io/open-vsx/v/jhenriotaliaslemeran81/vscode-rhai-support)](https://open-vsx.org/extension/jhenriotaliaslemeran81/vscode-rhai-support)
@@ -81,7 +81,52 @@ import "personnage" as p;
 let equipement = p::get_equipement(personnage);
 ```
 
-### 📖 Documentation au survol (Hover)
+### � Fonctions natives Rust (API du projet)
+
+Les fonctions enregistrées par l'hôte Rust (`engine.register_fn`, `#[export_module]`, packages) n'existent dans aucun fichier `.rhai`. L'extension lit deux artefacts générés par le projet Rust pour les documenter et y naviguer :
+
+| Artefact | Glob par défaut | Usage |
+|---|---|---|
+| `api.json` | `**/rhai-defs/api.json` | Hover (signatures, arguments, type de retour, doc) |
+| `api.d.rhai` | `**/rhai-defs/api.d.rhai` | Ctrl+Click / F12 (saute à la ligne de déclaration) |
+
+**Survol** d'une fonction native : carte 🔧 avec toutes les surcharges :
+
+```
+🔧 regle_active()
+
+fn regle_active(cle: string) -> bool
+fn regle_active(cle: string, valeur: string) -> bool
+
+📥 Arguments
+• `cle` : Clé ou nom affiché de la règle.
+
+📤 Returns
+`true` si la règle `choix`/`texte` vaut `valeur`.
+```
+
+**Ordre de résolution** — la doc du projet prime sur la carte générique :
+
+1. Alias d'import (📦)
+2. `module::fonction` (🟢)
+3. Fonction définie dans le fichier courant (🟢)
+4. **Fonction native Rust (🔧)**
+5. Fonction native Rhai générique (🔷)
+
+Une définition de script prime toujours sur une native homonyme. Les modifications des artefacts sont prises en compte immédiatement (file watcher), sans rechargement de fenêtre.
+
+**Génération des artefacts** (côté Rust, features `metadata` + `internals`) :
+
+```rust
+engine
+    .definitions()
+    .include_standard_packages(false)
+    .write_to_file("rhai-defs/api.d.rhai")?;
+
+std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
+```
+
+### �📖 Documentation au survol (Hover)
 
 Survolez une fonction pour voir sa documentation instantanée avec un affichage enrichi :
 
@@ -197,14 +242,14 @@ Ou cherche **Rhai** dans la vue Extensions (Ctrl+Shift+X) — compatible VSCodiu
 ### Méthode 2 : Fichier VSIX
 
 ```bash
-code --install-extension vscode-rhai-support-2026.2.2.vsix
+code --install-extension vscode-rhai-support-2026.3.1.vsix
 ```
 
 Ou via l'interface :
 1. Ouvrir **Extensions** (Ctrl+Shift+X)
 2. Cliquer sur `...` (plus d'actions)
 3. **Install from VSIX...**
-4. Sélectionner `vscode-rhai-support-2026.2.2.vsix`
+4. Sélectionner `vscode-rhai-support-2026.3.1.vsix`
 
 ### Méthode 3 : Développement local
 

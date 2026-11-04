@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { NativeApiIndex, registerNativeApiWatcher } from './nativeApi';
 
 //#region: DocumentSymbolProvider — Outline / Structure
 
@@ -591,6 +592,8 @@ async function findDefinitionInWorkspace(
 //#region: DefinitionProvider — Ctrl+Click sur les fonctions
 
 export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
+	constructor(private readonly nativeApi: NativeApiIndex = new NativeApiIndex()) {}
+
 	async provideDefinition(
 		document: vscode.TextDocument,
 		position: vscode.Position,
@@ -602,6 +605,8 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		}
 
 		const word = document.getText(wordRange);
+
+		await this.nativeApi.ensureLoaded();
 
 		// Get the full line to check for module::function pattern
 		const line = document.lineAt(position);
@@ -693,6 +698,17 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 			}
 		}
 
+		// Fallback: native Rust function declared in the project definitions
+		const nativeLocations = this.nativeApi.getDefinitionLocations(word);
+		if (nativeLocations.length > 0) {
+			return nativeLocations.map((location) => ({
+				originSelectionRange: wordRange,
+				targetUri: location.uri,
+				targetRange: new vscode.Range(location.line, 0, location.line, location.textLength),
+				targetSelectionRange: new vscode.Range(location.line, location.selectionStart, location.line, location.selectionEnd)
+			}));
+		}
+
 		return null;
 	}
 
@@ -764,6 +780,8 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 //#region: HoverProvider — Documentation des fonctions natives Rhai
 
 export class RhaiHoverProvider implements vscode.HoverProvider {
+	constructor(private readonly nativeApi: NativeApiIndex = new NativeApiIndex()) {}
+
 	// Liste des fonctions natives Rhai courantes
 	private nativeFunctions: Set<string> = new Set([
 		'type_of', 'print', 'debug', 'is_def_fn', 'is_def_var', 'eval',
@@ -792,18 +810,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		const word = document.getText(wordRange);
 		const lineText = document.lineAt(position).text;
 
-		// Check for native Rhai function
-		if (this.nativeFunctions.has(word)) {
-			const hoverContent = new vscode.MarkdownString();
-			hoverContent.supportHtml = true;
-			hoverContent.appendMarkdown(`### 🔷 ${word}()\n\n`);
-			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**  \n`);
-			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.  \n\n`);
-			hoverContent.appendMarkdown(`---  \n`);
-			hoverContent.appendMarkdown(`[📖 Voir la documentation →](https://rhai.rs/book "Ouvrir rhai.rs/book")`);
-			hoverContent.isTrusted = true;
-			return new vscode.Hover(hoverContent, wordRange);
-		}
+		await this.nativeApi.ensureLoaded();
 
 		// Check for import alias hover (e.g., hover on "p" in import "personnage" as p;)
 		const importAliasDoc = await this.findModuleDocumentationForAlias(document, word, lineText);
@@ -853,6 +860,29 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 			hoverContent.appendMarkdown(`${userFunctionDoc}\n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
 			hoverContent.appendMarkdown(`*Fonction définie dans ce fichier*`);
+			hoverContent.isTrusted = true;
+			return new vscode.Hover(hoverContent, wordRange);
+		}
+
+		// Check for a native Rust function exposed by the project API
+		const nativeHover = this.nativeApi.buildHover(word);
+		if (nativeHover) {
+			const hoverContent = new vscode.MarkdownString();
+			hoverContent.supportHtml = true;
+			hoverContent.appendMarkdown(nativeHover);
+			hoverContent.isTrusted = true;
+			return new vscode.Hover(hoverContent, wordRange);
+		}
+
+		// Fallback: built-in Rhai function
+		if (this.nativeFunctions.has(word)) {
+			const hoverContent = new vscode.MarkdownString();
+			hoverContent.supportHtml = true;
+			hoverContent.appendMarkdown(`### 🔷 ${word}()\n\n`);
+			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**  \n`);
+			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.  \n\n`);
+			hoverContent.appendMarkdown(`---  \n`);
+			hoverContent.appendMarkdown(`[📖 Voir la documentation →](https://rhai.rs/book "Ouvrir rhai.rs/book")`);
 			hoverContent.isTrusted = true;
 			return new vscode.Hover(hoverContent, wordRange);
 		}
@@ -1125,6 +1155,9 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 //#region: Activation
 
 export function activate(context: vscode.ExtensionContext): void {
+	const nativeApi = new NativeApiIndex();
+	context.subscriptions.push(registerNativeApiWatcher(nativeApi));
+
 	const symbolProvider = new RhaiDocumentSymbolProvider();
 	context.subscriptions.push(
 		vscode.languages.registerDocumentSymbolProvider(
@@ -1141,7 +1174,7 @@ export function activate(context: vscode.ExtensionContext): void {
 		)
 	);
 
-	const definitionProvider = new RhaiDefinitionProvider();
+	const definitionProvider = new RhaiDefinitionProvider(nativeApi);
 	context.subscriptions.push(
 		vscode.languages.registerDefinitionProvider(
 			{ language: 'rhai', scheme: 'file' },
@@ -1149,7 +1182,7 @@ export function activate(context: vscode.ExtensionContext): void {
 		)
 	);
 
-	const hoverProvider = new RhaiHoverProvider();
+	const hoverProvider = new RhaiHoverProvider(nativeApi);
 	context.subscriptions.push(
 		vscode.languages.registerHoverProvider(
 			{ language: 'rhai', scheme: 'file' },

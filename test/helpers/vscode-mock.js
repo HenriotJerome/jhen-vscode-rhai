@@ -57,7 +57,11 @@ function globToRegExp(glob) {
 
 function createVscodeMock() {
 	const files = new Map();
-	const settings = { 'navigation.searchSubdirectories': true };
+	const settings = {
+		'navigation.searchSubdirectories': true,
+		'navigation.nativeApi': ['**/rhai-defs/api.json'],
+		'navigation.nativeDefinitions': ['**/rhai-defs/api.d.rhai']
+	};
 
 	function setFile(filePath, content) {
 		files.set(filePath, content);
@@ -66,6 +70,8 @@ function createVscodeMock() {
 	function reset() {
 		files.clear();
 		settings['navigation.searchSubdirectories'] = true;
+		settings['navigation.nativeApi'] = ['**/rhai-defs/api.json'];
+		settings['navigation.nativeDefinitions'] = ['**/rhai-defs/api.d.rhai'];
 	}
 
 	function createDocument(filePath) {
@@ -129,15 +135,14 @@ function createVscodeMock() {
 				return { uri: new Uri('d:/proj'), name: 'proj', index: 0 };
 			},
 			async findFiles(include, _exclude, maxResults) {
-				const glob = include && include.pattern ? include.pattern : '**/*';
+				const glob = typeof include === 'string'
+					? include
+					: (include && include.pattern ? include.pattern : '**/*');
 				const basePath = include && include.baseUri ? include.baseUri.path : '';
 				const matcher = globToRegExp(glob);
 
 				const matches = [];
 				for (const filePath of files.keys()) {
-					if (!filePath.endsWith('.rhai')) {
-						continue;
-					}
 					if (basePath && !isUnder(new Uri(filePath), basePath)) {
 						continue;
 					}
@@ -150,6 +155,10 @@ function createVscodeMock() {
 					}
 				}
 				return matches;
+			},
+			createFileSystemWatcher() {
+				const noop = () => ({ dispose() {} });
+				return { onDidChange: noop, onDidCreate: noop, onDidDelete: noop, dispose() {} };
 			},
 			async openTextDocument(uri) {
 				return createDocument(uri.path);
@@ -196,8 +205,28 @@ function createVscodeMock() {
 			registerDefinitionProvider() {},
 			registerHoverProvider() {}
 		},
-		Hover: class {},
-		MarkdownString: class {},
+		Hover: class Hover {
+			constructor(contents, range) {
+				this.contents = Array.isArray(contents) ? contents : [contents];
+				this.range = range;
+			}
+		},
+		MarkdownString: class MarkdownString {
+			constructor(value = '') {
+				this.value = value;
+				this.supportHtml = false;
+				this.isTrusted = false;
+			}
+			appendMarkdown(value) {
+				this.value += value;
+				return this;
+			}
+		},
+		Disposable: {
+			from: (...items) => ({
+				dispose: () => items.forEach((item) => item && item.dispose && item.dispose())
+			})
+		},
 		DocumentSymbol: class {},
 		TextEdit: { replace: (range, newText) => ({ range, newText }) }
 	};

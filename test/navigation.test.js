@@ -9,8 +9,9 @@ const mock = createVscodeMock();
 mock.install();
 
 const { RhaiDefinitionProvider } = require('../out/extension.js');
+const { NativeApiIndex } = require('../out/nativeApi.js');
 
-const provider = new RhaiDefinitionProvider();
+let provider;
 
 async function provideDefinition(filePath, line, character) {
 	const document = mock.createDocument(filePath);
@@ -25,7 +26,10 @@ function targetOf(result) {
 	return `${targetUri.path}:${targetSelectionRange.start.line}`;
 }
 
-beforeEach(() => mock.reset());
+beforeEach(() => {
+	mock.reset();
+	provider = new RhaiDefinitionProvider(new NativeApiIndex());
+});
 
 test('trouve une fonction définie dans le fichier courant', async () => {
 	mock.setFile('d:/proj/main.rhai', [
@@ -114,4 +118,37 @@ test('retourne null quand le symbole est introuvable', async () => {
 	const result = await provideDefinition('d:/proj/main.rhai', 0, 10);
 
 	assert.strictEqual(targetOf(result), null);
+});
+
+test('ouvre la déclaration .d.rhai d\'une fonction native Rust', async () => {
+	mock.settings['navigation.searchSubdirectories'] = false;
+	mock.setFile('d:/proj/rhai-defs/api.d.rhai', [
+		'module static;',
+		'',
+		'/// Lit un lancer.',
+		'fn lire_lancer(lancer_id: string) -> map;'
+	].join('\n'));
+	mock.setFile('d:/proj/main.rhai', 'let l = lire_lancer("x");');
+
+	const result = await provideDefinition('d:/proj/main.rhai', 0, 10);
+
+	assert.strictEqual(targetOf(result), 'd:/proj/rhai-defs/api.d.rhai:3');
+});
+
+test('une fonction de script prime sur une native homonyme', async () => {
+	mock.setFile('d:/proj/rhai-defs/api.d.rhai', [
+		'module static;',
+		'',
+		'fn lire_lancer(lancer_id: string) -> map;'
+	].join('\n'));
+	mock.setFile('d:/proj/main.rhai', [
+		'fn lire_lancer(id) {',
+		'}',
+		'',
+		'let l = lire_lancer("x");'
+	].join('\n'));
+
+	const result = await provideDefinition('d:/proj/main.rhai', 3, 10);
+
+	assert.strictEqual(targetOf(result), 'd:/proj/main.rhai:0');
 });
