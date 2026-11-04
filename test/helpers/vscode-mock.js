@@ -244,4 +244,4 @@ function createVscodeMock() {
 	return { vscode, files, settings, setFile, reset, createDocument, install };
 }
 
-module.exports = { createVscodeMock, Position };
+module.exports = { createVscodeMock, Position, Uri };
