@@ -17,7 +17,7 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Mise à jour des dépendances** : TypeScript 7.0.2, `@vscode/vsce` 4.1.0, `@types/vscode` 1.144.0, `@types/node` 26.6.6
 - **Prérequis** : VS Code **1.144** minimum (`engines.vscode`)
 - **Code factorisé** : la résolution des chemins de modules est partagée entre le DefinitionProvider et le HoverProvider (plus de duplication)
-- **`.vscodeignore`** : `test/`, `.gitignore` et les fichiers `.vsix` ne sont plus embarqués dans l'extension publiée
+- **`.vscodeignore`** : `test/`, `src/`, `tsconfig.json`, `.gitignore` et les fichiers `.vsix` ne sont plus embarqués dans l'extension publiée
 
 ### 🐛 Corrections
 

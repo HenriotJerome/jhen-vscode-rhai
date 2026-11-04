@@ -1,5 +1,7 @@
 # Dev-only files, never shipped in the packaged extension
 .gitignore
 .vscode/**
+src/**
 test/**
+tsconfig.json
 *.vsix
