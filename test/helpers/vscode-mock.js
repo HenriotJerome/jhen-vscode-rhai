@@ -58,6 +58,15 @@ function globToRegExp(glob) {
 function createVscodeMock() {
 	const files = new Map();
 	const diagnosticCollections = [];
+	const registrations = [];
+	const registeredCommands = [];
+
+	function record(kind) {
+		return (selector) => {
+			registrations.push({ kind, selector });
+			return { dispose() {} };
+		};
+	}
 	const settings = {
 		'navigation.searchSubdirectories': true,
 		'navigation.nativeApi': ['**/rhai-defs/api.json'],
@@ -139,6 +148,7 @@ function createVscodeMock() {
 		SymbolKind: { Function: 11, Constant: 13, Variable: 12, Module: 1, Namespace: 2 },
 		FileType: { File: 1, Directory: 2 },
 		workspace: {
+			workspaceFolders: [],
 			getConfiguration() {
 				return {
 					get(key, defaultValue) {
@@ -230,23 +240,26 @@ function createVscodeMock() {
 			}
 		},
 		languages: {
-			registerDocumentSymbolProvider() {},
-			registerDocumentFormattingEditProvider() {},
-			registerDefinitionProvider() {},
-			registerHoverProvider() {},
-			registerCodeActionsProvider() {},
-			registerCompletionItemProvider() {},
-			registerSignatureHelpProvider() {},
-			registerReferenceProvider() {},
-			registerDocumentHighlightProvider() {},
-			registerRenameProvider() {},
-			registerWorkspaceSymbolProvider() {},
-			registerFoldingRangeProvider() {},
-			registerSelectionRangeProvider() {},
-			registerDocumentSemanticTokensProvider() {},
-			registerInlayHintsProvider() {},
-			registerDocumentRangeFormattingEditProvider() {},
-			registerOnTypeFormattingEditProvider() {},
+			registerDocumentSymbolProvider: record('documentSymbol'),
+			registerDocumentFormattingEditProvider: record('documentFormatting'),
+			registerDefinitionProvider: record('definition'),
+			registerHoverProvider: record('hover'),
+			registerCodeActionsProvider: record('codeActions'),
+			registerCompletionItemProvider: record('completion'),
+			registerSignatureHelpProvider: record('signatureHelp'),
+			registerReferenceProvider: record('references'),
+			registerDocumentHighlightProvider: record('documentHighlight'),
+			registerRenameProvider: record('rename'),
+			registerWorkspaceSymbolProvider(provider) {
+				registrations.push({ kind: 'workspaceSymbol', selector: undefined, provider });
+				return { dispose() {} };
+			},
+			registerFoldingRangeProvider: record('foldingRange'),
+			registerSelectionRangeProvider: record('selectionRange'),
+			registerDocumentSemanticTokensProvider: record('semanticTokens'),
+			registerInlayHintsProvider: record('inlayHints'),
+			registerDocumentRangeFormattingEditProvider: record('rangeFormatting'),
+			registerOnTypeFormattingEditProvider: record('onTypeFormatting'),
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				const collection = {
@@ -272,6 +285,46 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		StatusBarAlignment: { Left: 1, Right: 2 },
+		window: {
+			createOutputChannel(name) {
+				return {
+					name,
+					lines: [],
+					appendLine(value) {
+						this.lines.push(value);
+					},
+					show() {},
+					dispose() {}
+				};
+			},
+			createStatusBarItem() {
+				return {
+					text: '',
+					tooltip: '',
+					command: '',
+					name: '',
+					show() {},
+					hide() {},
+					dispose() {}
+				};
+			},
+			async showWarningMessage() {
+				return undefined;
+			},
+			async showInformationMessage() {
+				return undefined;
+			}
+		},
+		commands: {
+			registerCommand(id, handler) {
+				registeredCommands.push({ id, handler });
+				return { dispose() {} };
+			},
+			async executeCommand() {
+				return undefined;
+			}
+		},
 		InlayHintKind: { Type: 1, Parameter: 2 },
 		InlayHint: class InlayHint {
 			constructor(position, label, kind) {
@@ -439,7 +492,7 @@ function createVscodeMock() {
 		};
 	}
 
-	return { vscode, files, settings, diagnosticCollections, setFile, reset, createDocument, install };
+	return { vscode, files, settings, diagnosticCollections, registrations, registeredCommands, setFile, reset, createDocument, install };
 }
 
 module.exports = { createVscodeMock, Position, Range, Uri };
