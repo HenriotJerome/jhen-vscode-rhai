@@ -2,9 +2,9 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2026.1.2-blue.svg)
+![Version](https://img.shields.io/badge/version-2026.2.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-orange.svg)
+![VS Code](https://img.shields.io/badge/VS%20Code-1.144+-orange.svg)
 ![Rhai](https://img.shields.io/badge/Rhai-Scripting-brown.svg)
 
 </div>
@@ -67,7 +67,9 @@ Naviguez rapidement dans votre code Rhai, même entre fichiers :
 - **Ctrl+Click** sur `module::fonction` (ex: `p::get_equipement`) → ouvre le fichier importé et saute à la définition
 - **Ctrl+Click** sur un alias d'import (ex: `p` dans `import "personnage" as p;`) → ouvre le fichier module
 - **Ctrl+Click** sur un alias utilisé (ex: `p::` dans le code) → ouvre le fichier module
+- **Ctrl+Click** sur un nom introuvable dans le fichier courant → cherche dans tous les fichiers `.rhai` du workspace
 - Supporte les imports via `import "fichier" as alias`
+- La résolution des modules et des définitions cherche aussi dans les **sous-répertoires** du workspace (désactivable via `rhai.navigation.searchSubdirectories`)
 
 **Exemple :**
 ```rust
@@ -169,6 +171,7 @@ Règles du formateur :
 
 Configuration :
 - `rhai.format.enable` : Active/désactive le formateur (activé par défaut)
+- `rhai.navigation.searchSubdirectories` : Cherche les modules importés et les définitions dans les sous-répertoires du workspace (activé par défaut)
 
 ### �🗂️ Configuration Langage
 
@@ -183,14 +186,14 @@ Configuration :
 ### Méthode 1 : Fichier VSIX
 
 ```bash
-code --install-extension vscode-rhai-support-2026.1.2.vsix
+code --install-extension vscode-rhai-support-2026.2.1.vsix
 ```
 
 Ou via l'interface :
 1. Ouvrir **Extensions** (Ctrl+Shift+X)
 2. Cliquer sur `...` (plus d'actions)
 3. **Install from VSIX...**
-4. Sélectionner `vscode-rhai-support-2026.1.2.vsix`
+4. Sélectionner `vscode-rhai-support-2026.2.1.vsix`
 
 ### Méthode 2 : Développement local
 

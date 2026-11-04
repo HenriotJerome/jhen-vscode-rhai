@@ -2,6 +2,29 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.2.1] - 2026-11-04
+
+### ✨ Added
+
+- **Sub-directory search**: Module resolution (`import "character" as p;`) now looks for the file next to the current file, then recursively through the workspace sub-directories
+- **Extended cross-file navigation**: Ctrl+Click on a function or constant not found in the current file searches for its definition in every `.rhai` file of the workspace
+- **Navigation to imported constants**: `p::MY_CONSTANT` now opens its definition in the imported module, not only functions
+- **New `rhai.navigation.searchSubdirectories` setting** (enabled by default) to disable these recursive searches
+
+### 🔄 Changed
+
+- **Dependency updates**: TypeScript 7.0.2, `@vscode/vsce` 4.1.0, `@types/vscode` 1.144.0, `@types/node` 26.6.6
+- **Requirement**: VS Code **1.144** minimum (`engines.vscode`)
+- **Shared code**: module path resolution is now shared between the DefinitionProvider and the HoverProvider (no more duplication)
+
+### 🐛 Fixed
+
+- `@types/vscode` was no longer aligned with `engines.vscode`, which made `vsce package` fail
+- Special characters in a function name no longer break regular expression construction
+- `tsconfig.json` now declares `"types": ["node"]` explicitly, required by TypeScript 7 which no longer includes `@types` packages automatically
+
+---
+
 ## [2026.1.2] - 2026-04-16
 
 ### ✨ Added

@@ -393,6 +393,201 @@ export class RhaiFormattingProvider implements vscode.DocumentFormattingEditProv
 
 //#endregion: DocumentFormattingEditProvider
 
+//#region: Résolution des modules et des définitions
+
+const MODULE_EXTENSIONS = ['.rhai', ''];
+const EXCLUDED_SEARCH_DIRS = new Set(['node_modules', 'target', 'dist', 'out', 'build', 'coverage']);
+const MAX_SEARCH_DEPTH = 8;
+const MAX_WORKSPACE_FILES = 200;
+
+function searchSubdirectoriesEnabled(): boolean {
+	return vscode.workspace
+		.getConfiguration('rhai')
+		.get<boolean>('navigation.searchSubdirectories', true);
+}
+
+function escapeRegExp(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function fileExists(uri: vscode.Uri): Promise<boolean> {
+	try {
+		await vscode.workspace.fs.stat(uri);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function byPathDepth(a: vscode.Uri, b: vscode.Uri): number {
+	return a.path.split('/').length - b.path.split('/').length;
+}
+
+/**
+ * Resolve a module path to a file URI: first relative to the current file,
+ * then recursively through the sub-directories of the workspace.
+ */
+async function resolveModuleUri(
+	document: vscode.TextDocument,
+	modulePath: string
+): Promise<vscode.Uri | null> {
+	const baseDir = vscode.Uri.joinPath(document.uri, '..');
+
+	for (const ext of MODULE_EXTENSIONS) {
+		const fileUri = vscode.Uri.joinPath(baseDir, `${modulePath}${ext}`);
+		if (await fileExists(fileUri)) {
+			return fileUri;
+		}
+	}
+
+	// Explicit relative paths (./, ../) never fall back to a recursive search
+	if (modulePath.startsWith('.') || !searchSubdirectoriesEnabled()) {
+		return null;
+	}
+
+	const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+
+	if (workspaceFolder) {
+		const relative = modulePath.replace(/\\/g, '/');
+		for (const ext of MODULE_EXTENSIONS) {
+			const matches = await vscode.workspace.findFiles(
+				new vscode.RelativePattern(workspaceFolder, `**/${relative}${ext}`),
+				undefined,
+				MAX_WORKSPACE_FILES
+			);
+			if (matches.length > 0) {
+				return matches.sort(byPathDepth)[0];
+			}
+		}
+		return null;
+	}
+
+	return findModuleInSubDirectories(baseDir, modulePath, 0);
+}
+
+async function findModuleInSubDirectories(
+	dir: vscode.Uri,
+	modulePath: string,
+	depth: number
+): Promise<vscode.Uri | null> {
+	if (depth > MAX_SEARCH_DEPTH) {
+		return null;
+	}
+
+	for (const ext of MODULE_EXTENSIONS) {
+		const candidate = vscode.Uri.joinPath(dir, `${modulePath}${ext}`);
+		if (await fileExists(candidate)) {
+			return candidate;
+		}
+	}
+
+	let entries: [string, vscode.FileType][];
+	try {
+		entries = await vscode.workspace.fs.readDirectory(dir);
+	} catch {
+		return null;
+	}
+
+	const subDirectories = entries
+		.filter(
+			([name, type]) =>
+				type === vscode.FileType.Directory &&
+				!name.startsWith('.') &&
+				!EXCLUDED_SEARCH_DIRS.has(name)
+		)
+		.sort(([a], [b]) => a.localeCompare(b));
+
+	for (const [name] of subDirectories) {
+		const found = await findModuleInSubDirectories(
+			vscode.Uri.joinPath(dir, name),
+			modulePath,
+			depth + 1
+		);
+		if (found) {
+			return found;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Locate a function or constant definition inside a raw file content.
+ */
+function findDefinitionInText(
+	text: string,
+	uri: vscode.Uri,
+	name: string,
+	originSelectionRange: vscode.Range
+): vscode.LocationLink | null {
+	const definitionRegex = new RegExp(
+		`^[ \\t]*(?:fn|const)\\s+${escapeRegExp(name)}\\s*(?:\\(|=)`
+	);
+
+	const lines = text.split(/\r?\n/);
+	for (let i = 0; i < lines.length; i++) {
+		const lineText = lines[i];
+		if (!definitionRegex.test(lineText)) {
+			continue;
+		}
+		const index = lineText.indexOf(name);
+		return {
+			originSelectionRange,
+			targetUri: uri,
+			targetRange: new vscode.Range(i, 0, i, lineText.length),
+			targetSelectionRange: new vscode.Range(i, index, i, index + name.length)
+		};
+	}
+
+	return null;
+}
+
+/**
+ * Search every .rhai file of the workspace for a function or constant definition.
+ */
+async function findDefinitionInWorkspace(
+	document: vscode.TextDocument,
+	name: string,
+	originSelectionRange: vscode.Range
+): Promise<vscode.LocationLink[] | null> {
+	const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+	if (!workspaceFolder) {
+		return null;
+	}
+
+	let files: vscode.Uri[];
+	try {
+		files = await vscode.workspace.findFiles(
+			new vscode.RelativePattern(workspaceFolder, '**/*.rhai'),
+			undefined,
+			MAX_WORKSPACE_FILES
+		);
+	} catch {
+		return null;
+	}
+
+	for (const uri of files.sort(byPathDepth)) {
+		if (uri.toString() === document.uri.toString()) {
+			continue;
+		}
+		let text: string;
+		try {
+			const bytes = await vscode.workspace.fs.readFile(uri);
+			text = Buffer.from(bytes).toString('utf8');
+		} catch {
+			continue;
+		}
+		const location = findDefinitionInText(text, uri, name, originSelectionRange);
+		if (location) {
+			return [location];
+		}
+	}
+
+	return null;
+}
+
+//#endregion: Résolution des modules et des définitions
+
 //#region: DefinitionProvider — Ctrl+Click sur les fonctions
 
 export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
@@ -416,7 +611,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		const importLineMatch = lineText.match(/^import\s+"([^"]+)"\s+as\s+([a-zA-Z_][a-zA-Z0-9_]*)/);
 		if (importLineMatch && importLineMatch[2] === word) {
 			const modulePath = importLineMatch[1];
-			const moduleUri = await this.resolveModulePath(document, modulePath);
+			const moduleUri = await resolveModuleUri(document, modulePath);
 			if (moduleUri) {
 				return [{
 					originSelectionRange: wordRange,
@@ -430,7 +625,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		// Check if word is a known import alias → navigate to the module file
 		const importStmt = this.findImportStatement(document, word);
 		if (importStmt) {
-			const moduleUri = await this.resolveModulePath(document, importStmt.modulePath);
+			const moduleUri = await resolveModuleUri(document, importStmt.modulePath);
 			if (moduleUri) {
 				return [{
 					originSelectionRange: wordRange,
@@ -443,11 +638,11 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 
 		// Check for module::function pattern (e.g., p::get_equipement)
 		const moduleFnMatch = lineText.match(
-			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${word}`)
+			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${escapeRegExp(word)}`)
 		);
 		if (moduleFnMatch) {
 			const moduleAlias = moduleFnMatch[1];
-				const result = await this.findDefinitionInImportedModule(
+			const result = await this.findDefinitionInImportedModule(
 				document,
 				moduleAlias,
 				word,
@@ -461,7 +656,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		// Search for function definition in current file: fn word(...)
 		for (let i = 0; i < document.lineCount; i++) {
 			const lineText = document.lineAt(i).text;
-			const fnRegex = new RegExp(`^\\s*fn\\s+${word}\\s*\\(`);
+			const fnRegex = new RegExp(`^\\s*fn\\s+${escapeRegExp(word)}\\s*\\(`);
 			if (fnRegex.test(lineText)) {
 				return [{
 					originSelectionRange: wordRange,
@@ -473,7 +668,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		}
 
 		// Search for constant definition in current file: const WORD = ...
-		const constRegex = new RegExp(`^\\s*const\\s+${word}\\s*=`);
+		const constRegex = new RegExp(`^\\s*const\\s+${escapeRegExp(word)}\\s*=`);
 		for (let i = 0; i < document.lineCount; i++) {
 			const lineText = document.lineAt(i).text;
 			if (constRegex.test(lineText)) {
@@ -483,6 +678,18 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 					targetRange: new vscode.Range(i, 0, i, lineText.length),
 					targetSelectionRange: new vscode.Range(i, lineText.indexOf(word), i, lineText.indexOf(word) + word.length)
 				}];
+			}
+		}
+
+		// Fallback: search the whole workspace, sub-directories included
+		if (searchSubdirectoriesEnabled()) {
+			const workspaceResult = await findDefinitionInWorkspace(
+				document,
+				word,
+				wordRange
+			);
+			if (workspaceResult) {
+				return workspaceResult;
 			}
 		}
 
@@ -507,7 +714,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		const { modulePath } = importMatch;
 
 		// Resolve the module file path
-		const moduleUri = await this.resolveModulePath(document, modulePath);
+		const moduleUri = await resolveModuleUri(document, modulePath);
 		if (!moduleUri) {
 			return null;
 		}
@@ -518,25 +725,17 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 				moduleUri
 			);
 
-			// Search for the function definition
-			const fnRegex = new RegExp(`^\\s*fn\\s+${functionName}\\s*\\(`);
-			for (let i = 0; i < moduleDocument.lineCount; i++) {
-				const lineText = moduleDocument.lineAt(i).text;
-				if (fnRegex.test(lineText)) {
-					return [{
-						originSelectionRange: originSelectionRange,
-						targetUri: moduleUri,
-						targetRange: new vscode.Range(i, 0, i, lineText.length),
-						targetSelectionRange: new vscode.Range(i, lineText.indexOf(functionName), i, lineText.indexOf(functionName) + functionName.length)
-					}];
-				}
-			}
+			const location = findDefinitionInText(
+				moduleDocument.getText(),
+				moduleUri,
+				functionName,
+				originSelectionRange
+			);
+			return location ? [location] : null;
 		} catch {
 			// File not found or not accessible
 			return null;
 		}
-
-		return null;
 	}
 
 	/**
@@ -553,31 +752,6 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 			const match = lineText.match(importRegex);
 			if (match && match[2] === alias) {
 				return { modulePath: match[1] };
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Resolve module path to a file URI
-	 */
-	private async resolveModulePath(
-		document: vscode.TextDocument,
-		modulePath: string
-	): Promise<vscode.Uri | null> {
-		const baseDir = vscode.Uri.joinPath(document.uri, '..');
-
-		// Try different extensions
-		const extensions = ['.rhai', ''];
-
-		for (const ext of extensions) {
-			const fileUri = vscode.Uri.joinPath(baseDir, `${modulePath}${ext}`);
-			try {
-				await vscode.workspace.fs.stat(fileUri);
-				return fileUri;
-			} catch {
-				// File doesn't exist, try next
 			}
 		}
 
@@ -647,7 +821,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 
 		// Check for module::function pattern (e.g., p::get_equipement)
 		const moduleFnMatch = lineText.match(
-			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${word}`)
+			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${escapeRegExp(word)}`)
 		);
 		if (moduleFnMatch) {
 			const moduleAlias = moduleFnMatch[1];
@@ -703,7 +877,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		const { modulePath } = importMatch;
 
 		// Resolve the module file path
-		const moduleUri = await this.resolveModulePath(document, modulePath);
+		const moduleUri = await resolveModuleUri(document, modulePath);
 		if (!moduleUri) {
 			return null;
 		}
@@ -748,31 +922,6 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 	}
 
 	/**
-	 * Resolve module path to a file URI
-	 */
-	private async resolveModulePath(
-		document: vscode.TextDocument,
-		modulePath: string
-	): Promise<vscode.Uri | null> {
-		const baseDir = vscode.Uri.joinPath(document.uri, '..');
-
-		// Try different extensions
-		const extensions = ['.rhai', ''];
-
-		for (const ext of extensions) {
-			const fileUri = vscode.Uri.joinPath(baseDir, `${modulePath}${ext}`);
-			try {
-				await vscode.workspace.fs.stat(fileUri);
-				return fileUri;
-			} catch {
-				// File doesn't exist, try next
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Find module documentation (//!) when hovering on an import alias
 	 */
 	private async findModuleDocumentationForAlias(
@@ -801,7 +950,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		}
 
 		// Resolve the module file path
-		const moduleUri = await this.resolveModulePath(document, modulePath);
+		const moduleUri = await resolveModuleUri(document, modulePath);
 		if (!moduleUri) {
 			return null;
 		}
@@ -861,7 +1010,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		functionName: string
 	): string | null {
 		// Search for function definition
-		const fnRegex = new RegExp(`^\\s*fn\\s+${functionName}\\s*\\(`);
+		const fnRegex = new RegExp(`^\\s*fn\\s+${escapeRegExp(functionName)}\\s*\\(`);
 
 		for (let i = 0; i < document.lineCount; i++) {
 			const line = document.lineAt(i);

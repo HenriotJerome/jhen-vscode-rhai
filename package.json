@@ -2,7 +2,7 @@
 	"name": "vscode-rhai-support",
 	"displayName": "Rhai highlighting, outline and language configuration",
 	"description": "Syntax highlighting, outline and language configuration for Rhai scripts",
-	"version": "2026.1.2",
+	"version": "2026.2.1",
 	"publisher": "jhenriotaliaslemeran81",
 	"author": {
 		"name": "jhenriot alias lemeran81"
@@ -14,7 +14,7 @@
 		"url": "https://github.com/HenriotJerome/jhen-vscode-rhai.git"
 	},
 	"engines": {
-		"vscode": "^1.85.0"
+		"vscode": "^1.144.0"
 	},
 	"categories": [
 		"Programming Languages"
@@ -63,10 +63,16 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Active le formateur Rhai (Shift+Alt+F)"
+				},
+				"rhai.navigation.searchSubdirectories": {
+					"type": "boolean",
+					"default": true,
+					"description": "Recherche les modules importés et les définitions (fonctions, constantes) dans les sous-répertoires du workspace pour la navigation inter-fichiers"
 				}
 			}
 		}
 	},
+	"private": true,
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
@@ -76,9 +82,9 @@
 		"publish:ovsx": "ovsx publish"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.85.0",
-		"@types/node": "^20.0.0",
-		"typescript": "^5.3.0",
-		"@vscode/vsce": "^3.0.0"
+		"@types/node": "^26.6.6",
+		"@types/vscode": "^1.144.0",
+		"@vscode/vsce": "^4.1.0",
+		"typescript": "^7.0.2"
 	}
 }
