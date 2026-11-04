@@ -143,7 +143,7 @@ export class NativeApiIndex {
 		const parts: string[] = [
 			`### 🔧 ${name}()`,
 			'',
-			'**🔧 Fonction native Rust (moteur VTT)**',
+			'**🔧 Fonction native (hôte)**',
 			'',
 			...overloads.map((overload) => `\`fn ${overload.signature}\``)
 		];

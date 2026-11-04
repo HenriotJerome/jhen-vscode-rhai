@@ -81,36 +81,35 @@ import "personnage" as p;
 let equipement = p::get_equipement(personnage);
 ```
 
-### � Fonctions natives Rust (API du projet)
+### 🔧 Fonctions fournies par l'hôte
 
-Les fonctions enregistrées par l'hôte Rust (`engine.register_fn`, `#[export_module]`, packages) n'existent dans aucun fichier `.rhai`. L'extension lit deux artefacts générés par le projet Rust pour les documenter et y naviguer :
+Les fonctions enregistrées par une application hôte (`engine.register_fn`, `#[export_module]`, packages) n'existent dans aucun fichier `.rhai`. L'extension lit deux artefacts générés par l'hôte pour les documenter et y naviguer :
 
 | Artefact | Glob par défaut | Usage |
 |---|---|---|
 | `api.json` | `**/rhai-defs/api.json` | Hover (signatures, arguments, type de retour, doc) |
 | `api.d.rhai` | `**/rhai-defs/api.d.rhai` | Ctrl+Click / F12 (saute à la ligne de déclaration) |
 
-**Survol** d'une fonction native : carte 🔧 avec toutes les surcharges :
+**Survol** d'une fonction d'hôte : carte 🔧 avec toutes les surcharges :
 
 ```
-🔧 regle_active()
+🔧 greet()
 
-fn regle_active(cle: string) -> bool
-fn regle_active(cle: string, valeur: string) -> bool
+fn greet(name: string) -> string
 
 📥 Arguments
-• `cle` : Clé ou nom affiché de la règle.
+• `name` : Nom de la personne à saluer.
 
 📤 Returns
-`true` si la règle `choix`/`texte` vaut `valeur`.
+Un message de salutation.
 ```
 
-**Ordre de résolution** — la doc du projet prime sur la carte générique :
+**Ordre de résolution** — la doc de l'hôte prime sur la carte générique :
 
 1. Alias d'import (📦)
 2. `module::fonction` (🟢)
 3. Fonction définie dans le fichier courant (🟢)
-4. **Fonction native Rust (🔧)**
+4. **Fonction fournie par l'hôte (🔧)**
 5. Fonction native Rhai générique (🔷)
 
 Une définition de script prime toujours sur une native homonyme. Les modifications des artefacts sont prises en compte immédiatement (file watcher), sans rechargement de fenêtre.
@@ -126,7 +125,7 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
-### �📖 Documentation au survol (Hover)
+### 📖 Documentation au survol (Hover)
 
 Survolez une fonction pour voir sa documentation instantanée avec un affichage enrichi :
 
@@ -190,7 +189,7 @@ let pv = p::calculer_pv(12, 3);
 | `for` | Boucle for |
 | `if` | Condition if/else |
 
-### � Formateur de Code
+### 🔧 Formateur de Code
 
 Formate les signatures de fonctions avec **un paramètre par ligne** :   
 
@@ -219,7 +218,7 @@ Configuration :
 - `rhai.format.enable` : Active/désactive le formateur (activé par défaut)
 - `rhai.navigation.searchSubdirectories` : Cherche les modules importés et les définitions dans les sous-répertoires du workspace (activé par défaut)
 
-### �🗂️ Configuration Langage
+### 🗂️ Configuration Langage
 
 - **Commentaires** : `//` ligne, `/* */` bloc
 - **Brackets** : `{}`, `[]`, `()`, `#{}`

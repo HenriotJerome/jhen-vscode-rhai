@@ -2,11 +2,22 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [Unreleased]
+
+### 🔄 Changed
+
+- **Genericisation**: the native hover badge becomes "🔧 Fonction native (hôte)" — no host-specific reference left
+- **Hover security**: `isTrusted` and `supportHtml` removed — `command:` links inside doc comments are no longer clickable (`https` links still work)
+- **Documentation**: neutral examples (`greet(name)`) and section renamed to "Host-Provided Functions"
+- **Encoding**: corrupted emojis restored in README headings
+
+---
+
 ## [2026.3.1] - 2026-11-04
 
 ### ✨ Added
 
-- **Native Rust functions**: Hovering a function exposed by the Rust engine (`api.json`) shows its documentation — every overload, arguments, return type and doc comments, with a 🔧 badge
+- **Native Rust functions**: Hovering a function exposed by the host (`api.json`) shows its documentation — every overload, arguments, return type and doc comments, with a 🔧 badge
 - **Ctrl+Click to native declarations**: Jumps to the matching line in `api.d.rhai`
 - **Two new settings**: `rhai.navigation.nativeApi` and `rhai.navigation.nativeDefinitions` (globs, defaults `**/rhai-defs/api.json` and `**/rhai-defs/api.d.rhai`)
 - **Live reload**: a `FileSystemWatcher` invalidates the index as soon as the artefacts are regenerated, no window reload needed

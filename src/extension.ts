@@ -612,7 +612,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 		const line = document.lineAt(position);
 		const lineText = line.text;
 
-		// Check for import alias on this line (e.g., hover on "p" in import "personnage" as p;)
+		// Check for import alias on this line (e.g., hover on "u" in import "utils" as u;)
 		const importLineMatch = lineText.match(/^import\s+"([^"]+)"\s+as\s+([a-zA-Z_][a-zA-Z0-9_]*)/);
 		if (importLineMatch && importLineMatch[2] === word) {
 			const modulePath = importLineMatch[1];
@@ -641,7 +641,7 @@ export class RhaiDefinitionProvider implements vscode.DefinitionProvider {
 			}
 		}
 
-		// Check for module::function pattern (e.g., p::get_equipement)
+		// Check for module::function pattern (e.g., u::get_value)
 		const moduleFnMatch = lineText.match(
 			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${escapeRegExp(word)}`)
 		);
@@ -812,21 +812,19 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 
 		await this.nativeApi.ensureLoaded();
 
-		// Check for import alias hover (e.g., hover on "p" in import "personnage" as p;)
+		// Check for import alias hover (e.g., hover on "u" in import "utils" as u;)
 		const importAliasDoc = await this.findModuleDocumentationForAlias(document, word, lineText);
 		if (importAliasDoc) {
 			const { doc, moduleName } = importAliasDoc;
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.supportHtml = true;
 			hoverContent.appendMarkdown(`### 📦 ${moduleName}\n\n`);
 			hoverContent.appendMarkdown(`${doc}\n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
 			hoverContent.appendMarkdown(`🔗 *Module* \`${moduleName}\``);
-			hoverContent.isTrusted = true;
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
-		// Check for module::function pattern (e.g., p::get_equipement)
+		// Check for module::function pattern (e.g., u::get_value)
 		const moduleFnMatch = lineText.match(
 			new RegExp(`([a-zA-Z_][a-zA-Z0-9_]*)\\s*::\\s*${escapeRegExp(word)}`)
 		);
@@ -840,12 +838,10 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 			if (importedDoc) {
 				const { doc, moduleName } = importedDoc;
 				const hoverContent = new vscode.MarkdownString();
-				hoverContent.supportHtml = true;
 				hoverContent.appendMarkdown(`### 🟢 ${word}()\n\n`);
 				hoverContent.appendMarkdown(`${doc}\n\n`);
 				hoverContent.appendMarkdown(`---  \n`);
 				hoverContent.appendMarkdown(`🔗 *Importée depuis* \`${moduleName}\``);
-				hoverContent.isTrusted = true;
 				return new vscode.Hover(hoverContent, wordRange);
 			}
 			return null;
@@ -855,12 +851,10 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		const userFunctionDoc = this.findFunctionDocumentation(document, word);
 		if (userFunctionDoc) {
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.supportHtml = true;
 			hoverContent.appendMarkdown(`### 🟢 ${word}()\n\n`);
 			hoverContent.appendMarkdown(`${userFunctionDoc}\n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
 			hoverContent.appendMarkdown(`*Fonction définie dans ce fichier*`);
-			hoverContent.isTrusted = true;
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
@@ -868,22 +862,18 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		const nativeHover = this.nativeApi.buildHover(word);
 		if (nativeHover) {
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.supportHtml = true;
 			hoverContent.appendMarkdown(nativeHover);
-			hoverContent.isTrusted = true;
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
 		// Fallback: built-in Rhai function
 		if (this.nativeFunctions.has(word)) {
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.supportHtml = true;
 			hoverContent.appendMarkdown(`### 🔷 ${word}()\n\n`);
 			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**  \n`);
 			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.  \n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
 			hoverContent.appendMarkdown(`[📖 Voir la documentation →](https://rhai.rs/book "Ouvrir rhai.rs/book")`);
-			hoverContent.isTrusted = true;
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 

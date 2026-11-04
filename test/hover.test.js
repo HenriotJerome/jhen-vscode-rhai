@@ -46,7 +46,7 @@ const API_JSON = JSON.stringify({
 		},
 		{
 			access: 'public',
-			docComments: ['Remplace une portion de texte (documentation VTT).'],
+			docComments: ["Remplace une portion de texte (documentation fournie par l'hôte)."],
 			name: 'replace',
 			numParams: 3,
 			params: [
@@ -80,24 +80,24 @@ beforeEach(() => {
 	provider = new RhaiHoverProvider(new NativeApiIndex());
 });
 
-test('affiche la documentation native Rust avec toutes les surcharges', async () => {
+test("affiche la documentation fournie par l'hôte avec toutes les surcharges", async () => {
 	mock.setFile('d:/proj/main.rhai', 'let x = regle_active("or");');
 
 	const markdown = markdownOf(await hoverOn('d:/proj/main.rhai', 0, 10));
 
-	assert.ok(markdown.includes('Fonction native Rust'));
+	assert.ok(markdown.includes('Fonction native (hôte)'));
 	assert.ok(markdown.includes('regle_active(cle: string) -> bool'));
 	assert.ok(markdown.includes('regle_active(cle: string, valeur: string) -> bool'));
 	assert.ok(markdown.includes('📥 Arguments'));
 	assert.ok(markdown.includes('📤 Returns'));
 });
 
-test('la documentation native Rust prime sur le hover générique', async () => {
+test("la documentation de l'hôte prime sur le hover générique", async () => {
 	mock.setFile('d:/proj/main.rhai', 'let t = replace(texte, motif, autre);');
 
 	const markdown = markdownOf(await hoverOn('d:/proj/main.rhai', 0, 10));
 
-	assert.ok(markdown.includes('documentation VTT'));
+	assert.ok(markdown.includes("documentation fournie par l'hôte"));
 	assert.strictEqual(markdown.includes('Fonction intégrée au langage Rhai'), false);
 });
 
@@ -122,7 +122,7 @@ test('une fonction du fichier courant prime sur la native homonyme', async () =>
 	const markdown = markdownOf(await hoverOn('d:/proj/main.rhai', 4, 10));
 
 	assert.ok(markdown.includes('Ma documentation locale'));
-	assert.strictEqual(markdown.includes('Fonction native Rust'), false);
+	assert.strictEqual(markdown.includes('Fonction native (hôte)'), false);
 });
 
 test('retourne null pour un nom inconnu', async () => {
@@ -131,4 +131,30 @@ test('retourne null pour un nom inconnu', async () => {
 	const hover = await hoverOn('d:/proj/main.rhai', 0, 10);
 
 	assert.strictEqual(hover, null);
+});
+
+test('les liens de commande des docs de fichier ne sont pas cliquables', async () => {
+	mock.setFile('d:/proj/main.rhai', [
+		'/// Voir [ici](command:workbench.action.reloadWindow).',
+		'fn regle_active(cle) {',
+		'}',
+		'',
+		'let x = regle_active("or");'
+	].join('\n'));
+
+	const hover = await hoverOn('d:/proj/main.rhai', 4, 10);
+
+	assert.ok(hover);
+	assert.strictEqual(hover.contents[0].isTrusted, false);
+	assert.strictEqual(hover.contents[0].supportHtml, false);
+});
+
+test('le hover natif reste non fiable et sans HTML', async () => {
+	mock.setFile('d:/proj/main.rhai', 'let x = regle_active("or");');
+
+	const hover = await hoverOn('d:/proj/main.rhai', 0, 10);
+
+	assert.ok(hover);
+	assert.strictEqual(hover.contents[0].isTrusted, false);
+	assert.strictEqual(hover.contents[0].supportHtml, false);
 });
