@@ -268,6 +268,9 @@ Formatter rules:
 
 Configuration:
 - `rhai.format.enable`: Enable/disable the formatter (enabled by default)
+- `rhai.inlayHints.enable`: Show host function parameter names on calls (enabled by default)
+
+**Range formatting** (`Shift+Alt+F` on a selection) and **on-type formatting** (on `}` and `;`) re-indent blocks only — the output is idempotent and follows `editor.insertSpaces` / `editor.tabSize`.
 - `rhai.navigation.searchSubdirectories`: Search imported modules and definitions in workspace sub-directories (enabled by default)
 
 ### 🗂️ Language Configuration

@@ -13,6 +13,9 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Références, highlights et rename** : *Find All References* sur les fonctions, constantes et accès `alias::`, mise en évidence des occurrences dans le document, renommage (F2) sur tout le workspace — refusé pour les mots-clés, les fonctions fournies par l'hôte et les symboles ambigus
 - **Symboles, pliage et sélection** : `Ctrl+T` liste toutes les fonctions et constantes du workspace ; pliage des blocs, des régions `// region:` et des groupes d'imports ; sélection par niveaux (expression → instruction → bloc → fonction)
 - **Semantic tokens** : coloration sémantique des fonctions (déclaration et appel), constantes, variables, paramètres, propriétés, alias d'import, mots-clés, opérateurs, chaînes, nombres et commentaires — le tmLanguage reste le fallback
+- **Inlay hints** : noms de paramètres affichés sur les appels aux fonctions natives de l'hôte, désactivable via `rhai.inlayHints.enable`
+- **Code actions** : squelette de documentation `///` sur une fonction nue, tri et déduplication des imports
+- **Formatage étendu** : réindentation par blocs (formatage de plage `Maj+Alt+F` sur une sélection, et à la frappe sur `}` et `;`), idempotente et respectant `insertSpaces` / `tabSize`
 
 ### 🔄 Changements
 

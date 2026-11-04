@@ -268,6 +268,9 @@ Règles du formateur :
 
 Configuration :
 - `rhai.format.enable` : Active/désactive le formateur (activé par défaut)
+- `rhai.inlayHints.enable` : Affiche les noms de paramètres des fonctions de l'hôte sur les appels (activé par défaut)
+
+**Formatage de plage** (`Maj+Alt+F` sur une sélection) et **formatage à la frappe** (sur `}` et `;`) ne réindentent que les blocs — la sortie est idempotente et suit `editor.insertSpaces` / `editor.tabSize`.
 - `rhai.navigation.searchSubdirectories` : Cherche les modules importés et les définitions dans les sous-répertoires du workspace (activé par défaut)
 
 ### 🗂️ Configuration Langage

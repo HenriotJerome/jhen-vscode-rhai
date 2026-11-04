@@ -13,6 +13,9 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **References, highlights and rename**: *Find All References* on functions, constants and `alias::` accesses, occurrence highlighting in the document, rename (F2) across the workspace — refused for keywords, host-provided functions and ambiguous symbols
 - **Workspace symbols, folding and selection**: `Ctrl+T` lists every function and constant of the workspace; folding for blocks, `// region:` regions and import groups; level selection (expression → statement → block → function)
 - **Semantic tokens**: semantic colouring for functions (declaration and call), constants, variables, parameters, properties, import aliases, keywords, operators, strings, numbers and comments — tmLanguage remains the fallback
+- **Inlay hints**: parameter names shown on host function calls, disable with `rhai.inlayHints.enable`
+- **Code actions**: `///` documentation skeleton on a bare function, sorting and deduplication of imports
+- **Extended formatting**: block re-indentation (range formatting `Shift+Alt+F` on a selection, and on-type on `}` and `;`), idempotent and honouring `insertSpaces` / `tabSize`
 
 ### 🔄 Changed
 

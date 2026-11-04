@@ -9,6 +9,8 @@ import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
 import { RhaiFoldingRangeProvider } from './features/folding';
 import { RhaiHoverProvider } from './features/hover';
+import { RhaiInlayHintsProvider } from './features/inlayHints';
+import { RhaiOnTypeFormattingProvider, RhaiRangeFormattingProvider } from './features/rangeFormatting';
 import { RhaiReferenceProvider } from './features/references';
 import { RhaiRenameProvider } from './features/rename';
 import { RhaiSelectionRangeProvider } from './features/selectionRange';
@@ -63,6 +65,26 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerInlayHintsProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiInlayHintsProvider(nativeApi)
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerDocumentRangeFormattingEditProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiRangeFormattingProvider()
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerOnTypeFormattingEditProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiOnTypeFormattingProvider(),
+			'}',
+			';'
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerDocumentSemanticTokensProvider(
 			{ language: 'rhai', scheme: 'file' },

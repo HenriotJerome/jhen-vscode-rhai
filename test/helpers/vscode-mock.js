@@ -226,6 +226,9 @@ function createVscodeMock() {
 			registerFoldingRangeProvider() {},
 			registerSelectionRangeProvider() {},
 			registerDocumentSemanticTokensProvider() {},
+			registerInlayHintsProvider() {},
+			registerDocumentRangeFormattingEditProvider() {},
+			registerOnTypeFormattingEditProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -249,6 +252,15 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		InlayHintKind: { Type: 1, Parameter: 2 },
+		InlayHint: class InlayHint {
+			constructor(position, label, kind) {
+				this.position = position;
+				this.label = label;
+				this.kind = kind;
+				this.paddingRight = false;
+			}
+		},
 		SemanticTokensLegend: class SemanticTokensLegend {
 			constructor(tokenTypes, tokenModifiers) {
 				this.tokenTypes = tokenTypes;
@@ -337,7 +349,9 @@ function createVscodeMock() {
 		CodeActionKind: {
 			QuickFix: { value: 'quickfix' },
 			Refactor: { value: 'refactor' },
-			Source: { value: 'source' }
+			RefactorRewrite: { value: 'refactor.rewrite' },
+			Source: { value: 'source' },
+			SourceOrganizeImports: { value: 'source.organizeImports' }
 		},
 		CodeAction: class CodeAction {
 			constructor(title, kind) {
@@ -384,7 +398,15 @@ function createVscodeMock() {
 			})
 		},
 		DocumentSymbol: class {},
-		TextEdit: { replace: (range, newText) => ({ range, newText }) }
+		TextEdit: class TextEdit {
+			constructor(range, newText) {
+				this.range = range;
+				this.newText = newText;
+			}
+			static replace(range, newText) {
+				return new TextEdit(range, newText);
+			}
+		}
 	};
 
 	function install() {
@@ -400,4 +422,4 @@ function createVscodeMock() {
 	return { vscode, files, settings, setFile, reset, createDocument, install };
 }
 
-module.exports = { createVscodeMock, Position, Uri };
+module.exports = { createVscodeMock, Position, Range, Uri };
