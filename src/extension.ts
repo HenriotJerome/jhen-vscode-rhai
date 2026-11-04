@@ -12,6 +12,7 @@ import { RhaiHoverProvider } from './features/hover';
 import { RhaiReferenceProvider } from './features/references';
 import { RhaiRenameProvider } from './features/rename';
 import { RhaiSelectionRangeProvider } from './features/selectionRange';
+import { RhaiSemanticTokensProvider, SEMANTIC_TOKENS_LEGEND } from './features/semanticTokens';
 import { RhaiSignatureHelpProvider } from './features/signatureHelp';
 import { RhaiDocumentSymbolProvider } from './features/symbols';
 import { RhaiWorkspaceSymbolProvider } from './features/workspaceSymbols';
@@ -62,6 +63,13 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerDocumentSemanticTokensProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiSemanticTokensProvider(),
+			SEMANTIC_TOKENS_LEGEND
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerWorkspaceSymbolProvider(
 			new RhaiWorkspaceSymbolProvider(workspaceIndex)

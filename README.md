@@ -125,13 +125,27 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
-### �️ Workspace Symbols, Folding and Selection
+### 🎨 Semantic Highlighting
+
+On top of the TextMate grammar (kept as a fallback), the extension classifies tokens semantically:
+
+| Tokens | Examples |
+|---|---|
+| `function` | `fn alpha` (declaration), `alpha()`, `u::beta()` |
+| `variable` / `parameter` | `let y`, `const LIMITE` (readonly), `fn f(x)` |
+| `property` / `namespace` | `objet.cle`, `import "utils" as u` |
+| `keyword` / `operator` | `fn`, `let`, `if`, `+`, `??`, `::` |
+| `string` / `number` / `comment` | literals, `///` and `//!` docs |
+
+Multi-line comments and template strings are split per line, as required by the protocol.
+
+### 🗺️ Workspace Symbols, Folding and Selection
 
 - **Go to Symbol in Workspace** (`Ctrl+T`): every function and constant of the project, filterable by name
 - **Folding**: blocks, `// region:` / `// endregion:` sections and consecutive import groups
 - **Selection ranges** (`Shift+Alt+→`): expression → statement → block → function
 
-### �🔎 References, Highlights and Rename
+### 🔎 References, Highlights and Rename
 
 - **Find All References** (`Shift+F12`) on a function, a constant or an `alias::name` access, across the whole workspace
 - **Document highlights**: every occurrence of the symbol under the cursor is highlighted in the current file

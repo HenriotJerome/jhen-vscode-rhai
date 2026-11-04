@@ -13,6 +13,7 @@ export type Visibility = 'private' | 'public';
 export interface ImportDecl {
 	module: string;
 	alias: string;
+	aliasRange: Range;
 	range: Range;
 }
 
@@ -49,6 +50,7 @@ export interface LetStmt {
 	kind: 'let';
 	name: string;
 	value?: Expr;
+	nameRange: Range;
 	range: Range;
 }
 
@@ -56,6 +58,7 @@ export interface ConstStmt {
 	kind: 'const';
 	name: string;
 	value?: Expr;
+	nameRange: Range;
 	range: Range;
 }
 

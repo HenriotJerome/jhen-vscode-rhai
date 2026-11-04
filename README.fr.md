@@ -125,13 +125,27 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
-### �️ Symboles, pliage et sélection
+### 🎨 Coloration sémantique
+
+En complément de la grammaire TextMate (conservée en fallback), l'extension classe les tokens sémantiquement :
+
+| Tokens | Exemples |
+|---|---|
+| `function` | `fn alpha` (déclaration), `alpha()`, `u::beta()` |
+| `variable` / `parameter` | `let y`, `const LIMITE` (readonly), `fn f(x)` |
+| `property` / `namespace` | `objet.cle`, `import "utils" as u` |
+| `keyword` / `operator` | `fn`, `let`, `if`, `+`, `??`, `::` |
+| `string` / `number` / `comment` | littéraux, docs `///` et `//!` |
+
+Les commentaires multi-lignes et les templates sont découpés ligne par ligne, comme l'exige le protocole.
+
+### 🗺️ Symboles, pliage et sélection
 
 - **Aller au symbole du workspace** (`Ctrl+T`) : toutes les fonctions et constantes du projet, filtrables par nom
 - **Pliage** : blocs, sections `// region:` / `// endregion:` et groupes d'imports consécutifs
 - **Sélection par niveaux** (`Maj+Alt+→`) : expression → instruction → bloc → fonction
 
-### �🔎 Références, highlights et rename
+### 🔎 Références, highlights et rename
 
 - **Rechercher toutes les références** (`Maj+F12`) sur une fonction, une constante ou un accès `alias::nom`, dans tout le workspace
 - **Mise en évidence** : toutes les occurrences du symbole sous le curseur sont surlignées dans le fichier courant

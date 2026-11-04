@@ -225,6 +225,7 @@ function createVscodeMock() {
 			registerWorkspaceSymbolProvider() {},
 			registerFoldingRangeProvider() {},
 			registerSelectionRangeProvider() {},
+			registerDocumentSemanticTokensProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -248,6 +249,17 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		SemanticTokensLegend: class SemanticTokensLegend {
+			constructor(tokenTypes, tokenModifiers) {
+				this.tokenTypes = tokenTypes;
+				this.tokenModifiers = tokenModifiers;
+			}
+		},
+		SemanticTokens: class SemanticTokens {
+			constructor(data) {
+				this.data = data;
+			}
+		},
 		SymbolInformation: class SymbolInformation {
 			constructor(name, kind, containerName, location) {
 				this.name = name;

@@ -127,6 +127,7 @@ export class Parser {
 		return {
 			module: module.value.slice(1, -1),
 			alias: alias.value,
+			aliasRange: { start: tokenStart(alias), end: tokenEnd(alias) },
 			range: { start: tokenStart(start), end: tokenEnd(alias) }
 		};
 	}
@@ -228,12 +229,24 @@ export class Parser {
 				value = this.parseExpression();
 			}
 			this.expectPunct(';');
-			return { kind: 'let', name: name.value, value, range: { start: tokenStart(start), end: tokenEnd(name) } };
+			return {
+				kind: 'let',
+				name: name.value,
+				value,
+				nameRange: { start: tokenStart(name), end: tokenEnd(name) },
+				range: { start: tokenStart(start), end: tokenEnd(name) }
+			};
 		}
 
 		if (this.checkKeyword('const')) {
 			const declaration = this.parseConst([]);
-			return { kind: 'const', name: declaration.name, value: declaration.value, range: declaration.range };
+			return {
+				kind: 'const',
+				name: declaration.name,
+				value: declaration.value,
+				nameRange: declaration.nameRange,
+				range: declaration.range
+			};
 		}
 
 		if (this.checkKeyword('if')) {
