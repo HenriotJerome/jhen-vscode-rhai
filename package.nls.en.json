@@ -1,0 +1,22 @@
+{
+	"rhai.format.enable.description": "Enable the Rhai formatter (Shift+Alt+F)",
+	"rhai.navigation.searchSubdirectories.description": "Search imported modules and definitions (functions, constants) in the workspace sub-directories for cross-file navigation",
+	"rhai.navigation.nativeApi.description": "JSON files describing the host native functions (hover)",
+	"rhai.navigation.nativeDefinitions.description": ".d.rhai files describing the host native functions (Ctrl+Click)",
+	"rhai.diagnostics.enable.description": "Enable Rhai diagnostics (syntax errors, unused symbols, unreachable code)",
+	"rhai.navigation.nativeApiPriority.description": "Priority globs for host definitions: on a conflict (same name and arity) the first file found wins",
+	"rhai.host.regenerateCommand.description": "Shell command run by \"Rhai: Regenerate host definitions\" (empty = disabled)",
+	"rhai.inlayHints.enable.description": "Show host native function parameter names above the arguments",
+	"command.regenerate.title": "Rhai: Regenerate host definitions",
+	"command.validate.title": "Rhai: Validate host contract",
+	"walkthrough.title": "Get started with Rhai",
+	"walkthrough.description": "Highlighting, navigation, diagnostics and the native functions provided by your host.",
+	"walkthrough.openFile.title": "Open a Rhai file",
+	"walkthrough.openFile.description": "Highlighting, outline and folding are active as soon as a `.rhai` file is opened.",
+	"walkthrough.configureHost.title": "Wire up your host definitions",
+	"walkthrough.configureHost.description": "Set `rhai.navigation.nativeApi` and `rhai.navigation.nativeDefinitions` so the functions exposed by your application show up in hover and navigation.",
+	"walkthrough.navigate.title": "Hover and Ctrl+Click",
+	"walkthrough.navigate.description": "Hover a function for its documentation; `Ctrl+Click` opens its definition, including inside `api.d.rhai` for native functions.",
+	"walkthrough.diagnostics.title": "Diagnostics and completion",
+	"walkthrough.diagnostics.description": "Syntax errors, unused imports and unreachable code are reported. `Ctrl+Space` completes local and host functions."
+}

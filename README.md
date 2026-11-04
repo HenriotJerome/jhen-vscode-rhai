@@ -379,6 +379,14 @@ fn create_character(
 import "utilities" as u;
 ```
 
+## Troubleshooting
+
+**The extension never updates in my editor.** The extension is published on Open VSX. Some VS Code derivatives use their own curated gallery: if your editor only indexes its own catalogue, it will keep the installed version forever. Install the latest VSIX from the repository releases, or point your editor at the Open VSX gallery.
+
+**The extension is flagged as incompatible.** Compare `engines.vscode` with your editor version (`Help > About`). The extension targets VS Code **1.126 or newer**.
+
+**Host functions do not appear.** Run **Rhai: Validate host contract** and read the "Rhai" output channel: it lists the artefacts found, their date and any mismatch between `api.json` and `api.d.rhai`.
+
 ## License
 
 MIT — jhenriot alias lemeran81

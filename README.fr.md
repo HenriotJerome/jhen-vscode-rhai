@@ -379,6 +379,14 @@ fn creer_personnage(
 import "utilitaires" as u;
 ```
 
+## Dépannage
+
+**L'extension ne se met jamais à jour dans mon éditeur.** L'extension est publiée sur Open VSX. Certains dérivés de VS Code utilisent leur propre catalogue : si ton éditeur n'indexe que le sien, il conservera indéfiniment la version installée. Installe le dernier VSIX depuis les releases du dépôt, ou pointe ton éditeur vers la galerie Open VSX.
+
+**L'extension est signalée comme incompatible.** Compare `engines.vscode` avec la version de ton éditeur (`Aide > À propos`). L'extension cible VS Code **1.126 ou supérieur**.
+
+**Les fonctions de l'hôte n'apparaissent pas.** Lance **Rhai: Vérifier le contrat d'hôte** et lis le canal « Rhai » : il liste les artefacts trouvés, leur date et les incohérences entre `api.json` et `api.d.rhai`.
+
 ## Licence
 
 MIT — jhenriot alias lemeran81

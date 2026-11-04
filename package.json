@@ -62,12 +62,12 @@
 				"rhai.format.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "Active le formateur Rhai (Shift+Alt+F)"
+					"description": "%rhai.format.enable.description%"
 				},
 				"rhai.navigation.searchSubdirectories": {
 					"type": "boolean",
 					"default": true,
-					"description": "Recherche les modules importés et les définitions (fonctions, constantes) dans les sous-répertoires du workspace pour la navigation inter-fichiers"
+					"description": "%rhai.navigation.searchSubdirectories.description%"
 				},
 				"rhai.navigation.nativeApi": {
 					"type": "array",
@@ -77,7 +77,7 @@
 					"default": [
 						"**/rhai-defs/api.json"
 					],
-					"description": "Fichiers JSON de définitions des fonctions natives Rust (hover)"
+					"description": "%rhai.navigation.nativeApi.description%"
 				},
 				"rhai.navigation.nativeDefinitions": {
 					"type": "array",
@@ -87,12 +87,12 @@
 					"default": [
 						"**/rhai-defs/api.d.rhai"
 					],
-					"description": "Fichiers .d.rhai de définitions des fonctions natives Rust (Ctrl+Click)"
+					"description": "%rhai.navigation.nativeDefinitions.description%"
 				},
 				"rhai.diagnostics.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "Active les diagnostics Rhai (erreurs de syntaxe, symboles inutilisés, code inatteignable)"
+					"description": "%rhai.diagnostics.enable.description%"
 				},
 				"rhai.navigation.nativeApiPriority": {
 					"type": "array",
@@ -100,55 +100,55 @@
 						"type": "string"
 					},
 					"default": [],
-					"description": "Globs prioritaires pour les définitions d'hôte : en cas de conflit (même nom et même arité), le premier fichier trouvé gagne"
+					"description": "%rhai.navigation.nativeApiPriority.description%"
 				},
 				"rhai.host.regenerateCommand": {
 					"type": "string",
 					"default": "",
-					"description": "Commande shell exécutée par « Rhai: Régénérer les définitions d'hôte » (vide = désactivé)"
+					"description": "%rhai.host.regenerateCommand.description%"
 				},
 				"rhai.inlayHints.enable": {
 					"type": "boolean",
 					"default": true,
-					"description": "Affiche les noms de paramètres des fonctions natives de l'hôte au-dessus des arguments"
+					"description": "%rhai.inlayHints.enable.description%"
 				}
 			}
 		},
 		"commands": [
 			{
 				"command": "rhai.regenerateHostDefinitions",
-				"title": "Rhai: Régénérer les définitions d'hôte"
+				"title": "%command.regenerate.title%"
 			},
 			{
 				"command": "rhai.validateHostContract",
-				"title": "Rhai: Vérifier le contrat d'hôte"
+				"title": "%command.validate.title%"
 			}
 		],
 		"walkthroughs": [
 			{
 				"id": "rhai.getStarted",
-				"title": "Démarrer avec Rhai",
-				"description": "Coloration, navigation, diagnostics et fonctions natives fournies par votre hôte.",
+				"title": "%walkthrough.title%",
+				"description": "%walkthrough.description%",
 				"steps": [
 					{
 						"id": "openFile",
-						"title": "Ouvrir un fichier Rhai",
-						"description": "La coloration, le contour et le pliage sont actifs dès l'ouverture d'un fichier `.rhai`."
+						"title": "%walkthrough.openFile.title%",
+						"description": "%walkthrough.openFile.description%"
 					},
 					{
 						"id": "configureHost",
-						"title": "Brancher les définitions de votre hôte",
-						"description": "Renseignez `rhai.navigation.nativeApi` et `rhai.navigation.nativeDefinitions` pour que les fonctions exposées par votre application apparaissent dans le survol et la navigation."
+						"title": "%walkthrough.configureHost.title%",
+						"description": "%walkthrough.configureHost.description%"
 					},
 					{
 						"id": "navigate",
-						"title": "Survol et Ctrl+Click",
-						"description": "Survolez une fonction pour sa documentation ; `Ctrl+Click` ouvre sa définition, y compris dans `api.d.rhai` pour les fonctions natives."
+						"title": "%walkthrough.navigate.title%",
+						"description": "%walkthrough.navigate.description%"
 					},
 					{
 						"id": "diagnostics",
-						"title": "Diagnostics et complétion",
-						"description": "Les erreurs de syntaxe, les imports inutilisés et le code inatteignable sont signalés. `Ctrl+Espace` complète les fonctions locales et celles de l'hôte."
+						"title": "%walkthrough.diagnostics.title%",
+						"description": "%walkthrough.diagnostics.description%"
 					}
 				]
 			}
@@ -172,5 +172,9 @@
 	},
 	"allowScripts": {
 		"@vscode/vsce-sign@2.1.0": true
+	},
+	"galleryBanner": {
+		"color": "#1e1e2e",
+		"theme": "dark"
 	}
 }

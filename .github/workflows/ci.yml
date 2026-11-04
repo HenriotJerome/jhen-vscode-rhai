@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Compile
+        run: npm run compile
+
+      - name: Test
+        run: npm test
+
+      - name: Package
+        run: npm run package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix-${{ matrix.os }}
+          path: '*.vsix'
+          if-no-files-found: error
+
+  genericness:
+    name: Genericness
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject host-specific terms
+        shell: bash
+        run: |
+          set -euo pipefail
+          PATTERN='\b(vtt|personnage|personnages|équipement|equipement|moteur de jeu|système de jeu|systeme de jeu)\b'
+          if grep -rniE "$PATTERN" src README.md README.fr.md package.json; then
+            echo "::error::Host-specific term found — the extension must stay generic."
+            exit 1
+          fi
+          echo "No host-specific term found."
+
+      - name: Reject trusted hover content
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -rnE 'isTrusted|supportHtml' src; then
+            echo "::error::Hover content coming from files must never be trusted."
+            exit 1
+          fi
+          echo "Hover content is not trusted."

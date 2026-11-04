@@ -21,6 +21,9 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Régénération** : commande « Rhai: Régénérer les définitions d'hôte » pilotée par `rhai.host.regenerateCommand`, sortie dans le canal « Rhai », index rafraîchis à la fin
 - **Status bar** : indicateur `⚙ Rhai : N native(s)`, cliquable pour régénérer
 - **Walkthrough** : parcours « Démarrer avec Rhai » en 4 étapes
+- **CI/CD** : workflows GitHub Actions — `ci.yml` (compile, test, package sur Ubuntu et Windows), job « généricité » qui refuse tout terme propre à un hôte et tout contenu de hover `isTrusted`, `release.yml` sur tag `v*` (publication Open VSX, VSIX joint à la release, vérification post-publication)
+- **Documentation** : section « Dépannage » (galerie d'éditeur, incompatibilité, fonctions d'hôte absentes) et `galleryBanner`
+- **Localisation** : `package.nls.json` (français par défaut) et `package.nls.en.json` — réglages, commandes et walkthrough traduits
 
 ### 🔄 Changements
 

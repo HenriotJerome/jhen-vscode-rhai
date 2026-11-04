@@ -1,0 +1,22 @@
+{
+	"rhai.format.enable.description": "Active le formateur Rhai (Shift+Alt+F)",
+	"rhai.navigation.searchSubdirectories.description": "Recherche les modules importés et les définitions (fonctions, constantes) dans les sous-répertoires du workspace pour la navigation inter-fichiers",
+	"rhai.navigation.nativeApi.description": "Fichiers JSON de définitions des fonctions natives Rust (hover)",
+	"rhai.navigation.nativeDefinitions.description": "Fichiers .d.rhai de définitions des fonctions natives Rust (Ctrl+Click)",
+	"rhai.diagnostics.enable.description": "Active les diagnostics Rhai (erreurs de syntaxe, symboles inutilisés, code inatteignable)",
+	"rhai.navigation.nativeApiPriority.description": "Globs prioritaires pour les définitions d'hôte : en cas de conflit (même nom et même arité), le premier fichier trouvé gagne",
+	"rhai.host.regenerateCommand.description": "Commande shell exécutée par « Rhai: Régénérer les définitions d'hôte » (vide = désactivé)",
+	"rhai.inlayHints.enable.description": "Affiche les noms de paramètres des fonctions natives de l'hôte au-dessus des arguments",
+	"command.regenerate.title": "Rhai: Régénérer les définitions d'hôte",
+	"command.validate.title": "Rhai: Vérifier le contrat d'hôte",
+	"walkthrough.title": "Démarrer avec Rhai",
+	"walkthrough.description": "Coloration, navigation, diagnostics et fonctions natives fournies par votre hôte.",
+	"walkthrough.openFile.title": "Ouvrir un fichier Rhai",
+	"walkthrough.openFile.description": "La coloration, le contour et le pliage sont actifs dès l'ouverture d'un fichier `.rhai`.",
+	"walkthrough.configureHost.title": "Brancher les définitions de votre hôte",
+	"walkthrough.configureHost.description": "Renseignez `rhai.navigation.nativeApi` et `rhai.navigation.nativeDefinitions` pour que les fonctions exposées par votre application apparaissent dans le survol et la navigation.",
+	"walkthrough.navigate.title": "Survol et Ctrl+Click",
+	"walkthrough.navigate.description": "Survolez une fonction pour sa documentation ; `Ctrl+Click` ouvre sa définition, y compris dans `api.d.rhai` pour les fonctions natives.",
+	"walkthrough.diagnostics.title": "Diagnostics et complétion",
+	"walkthrough.diagnostics.description": "Les erreurs de syntaxe, les imports inutilisés et le code inatteignable sont signalés. `Ctrl+Espace` complète les fonctions locales et celles de l'hôte."
+}

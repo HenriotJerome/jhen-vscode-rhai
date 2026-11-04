@@ -21,6 +21,9 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **Regeneration**: "Rhai: Regenerate host definitions" command driven by `rhai.host.regenerateCommand`, output in the "Rhai" channel, indexes refreshed afterwards
 - **Status bar**: `⚙ Rhai: N native(s)` indicator, clickable to regenerate
 - **Walkthrough**: "Get started with Rhai" in 4 steps
+- **CI/CD**: GitHub Actions workflows — `ci.yml` (compile, test, package on Ubuntu and Windows), a "genericness" job rejecting any host-specific term and any `isTrusted` hover content, `release.yml` on `v*` tags (Open VSX publish, VSIX attached to the release, post-publish verification)
+- **Documentation**: "Troubleshooting" section (editor gallery, incompatibility, missing host functions) and `galleryBanner`
+- **Localisation**: `package.nls.json` (French by default) and `package.nls.en.json` — settings, commands and walkthrough translated
 
 ### 🔄 Changed
 
