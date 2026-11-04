@@ -2,6 +2,14 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.2] - 2026-11-04
+
+### 🐛 Fixed
+
+- Diagnostics were computed on every open document: a `.json`, `.md` or `.ts` file was parsed as Rhai and flooded with syntax errors. Only documents whose language is `rhai` (or ending in `.rhai`) are analysed now.
+
+---
+
 ## [2026.4.1] - 2026-11-04
 
 ### ✨ Added

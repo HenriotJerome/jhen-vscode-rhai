@@ -2,6 +2,14 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.2] - 2026-11-04
+
+### 🐛 Corrections
+
+- Les diagnostics étaient calculés sur **tous** les documents : un fichier `.json`, `.md` ou `.ts` était analysé comme du Rhai et rempli d'erreurs de syntaxe. Seuls les documents de langage `rhai` (ou d'extension `.rhai`) sont désormais analysés.
+
+---
+
 ## [2026.4.1] - 2026-11-04
 
 ### ✨ Ajouts
