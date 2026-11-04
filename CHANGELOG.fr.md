@@ -2,7 +2,7 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
-## [Unreleased]
+## [2026.4.1] - 2026-11-04
 
 ### ✨ Ajouts
 
