@@ -180,7 +180,7 @@ function createVscodeMock() {
 					if (!files.has(uri.path)) {
 						throw new Error(`File not found: ${uri.path}`);
 					}
-					return { type: 1, size: files.get(uri.path).length };
+					return { type: 1, size: files.get(uri.path).length, mtime: Date.now() };
 				},
 				async readFile(uri) {
 					if (!files.has(uri.path)) {

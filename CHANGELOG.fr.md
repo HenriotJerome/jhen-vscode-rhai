@@ -16,6 +16,11 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Inlay hints** : noms de paramètres affichés sur les appels aux fonctions natives de l'hôte, désactivable via `rhai.inlayHints.enable`
 - **Code actions** : squelette de documentation `///` sur une fonction nue, tri et déduplication des imports
 - **Formatage étendu** : réindentation par blocs (formatage de plage `Maj+Alt+F` sur une sélection, et à la frappe sur `}` et `;`), idempotente et respectant `insertSpaces` / `tabSize`
+- **Contrat d'hôte** : validation du JSON (`functions[]`, `type`, `access`, `numParams`, `signature`), contrôle de cohérence `.d.rhai` ↔ JSON, détection des artefacts obsolètes
+- **Multi-hôtes** : réglage `rhai.navigation.nativeApiPriority` — en cas de conflit (même nom, même arité), le premier glob gagne
+- **Régénération** : commande « Rhai: Régénérer les définitions d'hôte » pilotée par `rhai.host.regenerateCommand`, sortie dans le canal « Rhai », index rafraîchis à la fin
+- **Status bar** : indicateur `⚙ Rhai : N native(s)`, cliquable pour régénérer
+- **Walkthrough** : parcours « Démarrer avec Rhai » en 4 étapes
 
 ### 🔄 Changements
 

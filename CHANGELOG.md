@@ -16,6 +16,11 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **Inlay hints**: parameter names shown on host function calls, disable with `rhai.inlayHints.enable`
 - **Code actions**: `///` documentation skeleton on a bare function, sorting and deduplication of imports
 - **Extended formatting**: block re-indentation (range formatting `Shift+Alt+F` on a selection, and on-type on `}` and `;`), idempotent and honouring `insertSpaces` / `tabSize`
+- **Host contract**: JSON validation (`functions[]`, `type`, `access`, `numParams`, `signature`), `.d.rhai` ↔ JSON coherence check, stale artefact detection
+- **Multi-host**: `rhai.navigation.nativeApiPriority` — on a conflict (same name, same arity) the first glob wins
+- **Regeneration**: "Rhai: Regenerate host definitions" command driven by `rhai.host.regenerateCommand`, output in the "Rhai" channel, indexes refreshed afterwards
+- **Status bar**: `⚙ Rhai: N native(s)` indicator, clickable to regenerate
+- **Walkthrough**: "Get started with Rhai" in 4 steps
 
 ### 🔄 Changed
 

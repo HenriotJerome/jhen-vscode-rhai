@@ -112,6 +112,8 @@ A greeting message.
 4. **Host-provided function (🔧)**
 5. Generic built-in Rhai function (🔷)
 
+**Contract**: `api.json` must expose `functions[]` entries with `name`, `type`, `access`, `numParams` and `signature`. Run **Rhai: Validate host contract** to list the artefacts, their modification date and any mismatch with `api.d.rhai` in the "Rhai" output channel. When several hosts provide the same function and arity, `rhai.navigation.nativeApiPriority` decides which one wins; `rhai.host.regenerateCommand` powers the regeneration command.
+
 Script definitions always take precedence over host ones with the same name. Changes to the artefacts are picked up immediately (file watcher), no window reload needed.
 
 **Generating the artefacts** (host side, `metadata` + `internals` features):

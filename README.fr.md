@@ -112,6 +112,8 @@ Un message de salutation.
 4. **Fonction fournie par l'hôte (🔧)**
 5. Fonction native Rhai générique (🔷)
 
+**Contrat** : `api.json` doit exposer des entrées `functions[]` avec `name`, `type`, `access`, `numParams` et `signature`. Lancez **Rhai: Vérifier le contrat d'hôte** pour lister les artefacts, leur date de modification et les incohérences avec `api.d.rhai` dans le canal « Rhai ». Quand plusieurs hôtes fournissent la même fonction et la même arité, `rhai.navigation.nativeApiPriority` décide qui gagne ; `rhai.host.regenerateCommand` alimente la commande de régénération.
+
 Une définition de script prime toujours sur une native homonyme. Les modifications des artefacts sont prises en compte immédiatement (file watcher), sans rechargement de fenêtre.
 
 **Génération des artefacts** (côté Rust, features `metadata` + `internals`) :

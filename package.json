@@ -94,13 +94,65 @@
 					"default": true,
 					"description": "Active les diagnostics Rhai (erreurs de syntaxe, symboles inutilisés, code inatteignable)"
 				},
+				"rhai.navigation.nativeApiPriority": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"default": [],
+					"description": "Globs prioritaires pour les définitions d'hôte : en cas de conflit (même nom et même arité), le premier fichier trouvé gagne"
+				},
+				"rhai.host.regenerateCommand": {
+					"type": "string",
+					"default": "",
+					"description": "Commande shell exécutée par « Rhai: Régénérer les définitions d'hôte » (vide = désactivé)"
+				},
 				"rhai.inlayHints.enable": {
 					"type": "boolean",
 					"default": true,
 					"description": "Affiche les noms de paramètres des fonctions natives de l'hôte au-dessus des arguments"
 				}
 			}
-		}
+		},
+		"commands": [
+			{
+				"command": "rhai.regenerateHostDefinitions",
+				"title": "Rhai: Régénérer les définitions d'hôte"
+			},
+			{
+				"command": "rhai.validateHostContract",
+				"title": "Rhai: Vérifier le contrat d'hôte"
+			}
+		],
+		"walkthroughs": [
+			{
+				"id": "rhai.getStarted",
+				"title": "Démarrer avec Rhai",
+				"description": "Coloration, navigation, diagnostics et fonctions natives fournies par votre hôte.",
+				"steps": [
+					{
+						"id": "openFile",
+						"title": "Ouvrir un fichier Rhai",
+						"description": "La coloration, le contour et le pliage sont actifs dès l'ouverture d'un fichier `.rhai`."
+					},
+					{
+						"id": "configureHost",
+						"title": "Brancher les définitions de votre hôte",
+						"description": "Renseignez `rhai.navigation.nativeApi` et `rhai.navigation.nativeDefinitions` pour que les fonctions exposées par votre application apparaissent dans le survol et la navigation."
+					},
+					{
+						"id": "navigate",
+						"title": "Survol et Ctrl+Click",
+						"description": "Survolez une fonction pour sa documentation ; `Ctrl+Click` ouvre sa définition, y compris dans `api.d.rhai` pour les fonctions natives."
+					},
+					{
+						"id": "diagnostics",
+						"title": "Diagnostics et complétion",
+						"description": "Les erreurs de syntaxe, les imports inutilisés et le code inatteignable sont signalés. `Ctrl+Espace` complète les fonctions locales et celles de l'hôte."
+					}
+				]
+			}
+		]
 	},
 	"private": true,
 	"scripts": {

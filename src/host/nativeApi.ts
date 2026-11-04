@@ -39,6 +39,13 @@ function readGlobs(setting: string, defaults: string[]): string[] {
 	return Array.isArray(configured) && configured.length > 0 ? configured : defaults;
 }
 
+function readApiGlobs(): string[] {
+	const priority = vscode.workspace
+		.getConfiguration('rhai')
+		.get<string[]>('navigation.nativeApiPriority', []) ?? [];
+	return [...priority, ...readGlobs(API_SETTING, DEFAULT_API_GLOBS)];
+}
+
 async function collectFiles(globs: string[]): Promise<vscode.Uri[]> {
 	const seen = new Set<string>();
 	const files: vscode.Uri[] = [];
@@ -167,7 +174,7 @@ export class NativeApiIndex {
 
 	private async load(): Promise<void> {
 		try {
-			for (const uri of await collectFiles(readGlobs(API_SETTING, DEFAULT_API_GLOBS))) {
+			for (const uri of await collectFiles(readApiGlobs())) {
 				await this.loadApiFile(uri);
 			}
 			for (const uri of await collectFiles(readGlobs(DEFINITIONS_SETTING, DEFAULT_DEFINITION_GLOBS))) {
@@ -195,6 +202,10 @@ export class NativeApiIndex {
 				continue;
 			}
 			const overloads = this.functions.get(fn.name) ?? [];
+			// Multi-host: the first file wins for a given name and arity
+			if (overloads.some((existing) => existing.numParams === fn.numParams)) {
+				continue;
+			}
 			overloads.push(fn);
 			overloads.sort((a, b) => a.numParams - b.numParams);
 			this.functions.set(fn.name, overloads);

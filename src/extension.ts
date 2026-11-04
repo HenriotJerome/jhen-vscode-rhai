@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { NativeApiIndex, registerNativeApiWatcher } from './host/nativeApi';
+import { registerRegenerateCommand, registerValidateCommand } from './host/regenerate';
+import { HostStatusBar } from './host/statusBar';
 import { registerWorkspaceIndexWatchers, WorkspaceIndex } from './core/workspaceIndex';
 import { RhaiCodeActionProvider } from './features/codeActions';
 import { RhaiCompletionProvider } from './features/completion';
@@ -31,6 +33,12 @@ export function activate(context: vscode.ExtensionContext): void {
 	const workspaceIndex = new WorkspaceIndex();
 	context.subscriptions.push(registerNativeApiWatcher(nativeApi));
 	context.subscriptions.push(registerWorkspaceIndexWatchers(workspaceIndex));
+
+	const output = vscode.window.createOutputChannel('Rhai');
+	context.subscriptions.push(output);
+	context.subscriptions.push(registerRegenerateCommand(nativeApi, workspaceIndex, output));
+	context.subscriptions.push(registerValidateCommand(output));
+	context.subscriptions.push(new HostStatusBar(nativeApi));
 
 	const symbolProvider = new RhaiDocumentSymbolProvider();
 	context.subscriptions.push(
