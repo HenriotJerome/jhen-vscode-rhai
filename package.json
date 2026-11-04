@@ -79,8 +79,8 @@
 		"watch": "tsc -watch -p ./",
 		"test": "npm run compile && node --test test/",
 		"package": "npx vsce package",
-		"publish": "npx vsce publish",
-		"publish:ovsx": "ovsx publish"
+		"publish": "ovsx publish",
+		"publish:marketplace": "npx vsce publish"
 	},
 	"devDependencies": {
 		"@types/node": "^26.6.6",
