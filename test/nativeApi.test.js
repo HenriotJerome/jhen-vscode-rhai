@@ -8,7 +8,7 @@ const { createVscodeMock } = require('./helpers/vscode-mock');
 const mock = createVscodeMock();
 mock.install();
 
-const { NativeApiIndex } = require('../out/nativeApi.js');
+const { NativeApiIndex } = require('../out/host/nativeApi.js');
 
 const API_JSON = JSON.stringify({
 	functions: [

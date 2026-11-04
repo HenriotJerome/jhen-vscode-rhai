@@ -9,7 +9,7 @@ const mock = createVscodeMock();
 mock.install();
 
 const { RhaiDefinitionProvider } = require('../out/extension.js');
-const { NativeApiIndex } = require('../out/nativeApi.js');
+const { NativeApiIndex } = require('../out/host/nativeApi.js');
 
 let provider;
 
