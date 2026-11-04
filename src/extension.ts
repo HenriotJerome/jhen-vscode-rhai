@@ -7,11 +7,14 @@ import { RhaiDefinitionProvider } from './features/definition';
 import { RhaiDocumentHighlightProvider } from './features/documentHighlight';
 import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
+import { RhaiFoldingRangeProvider } from './features/folding';
 import { RhaiHoverProvider } from './features/hover';
 import { RhaiReferenceProvider } from './features/references';
 import { RhaiRenameProvider } from './features/rename';
+import { RhaiSelectionRangeProvider } from './features/selectionRange';
 import { RhaiSignatureHelpProvider } from './features/signatureHelp';
 import { RhaiDocumentSymbolProvider } from './features/symbols';
+import { RhaiWorkspaceSymbolProvider } from './features/workspaceSymbols';
 
 export { RhaiDefinitionProvider } from './features/definition';
 export { RhaiFormattingProvider } from './features/formatting';
@@ -59,6 +62,23 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerWorkspaceSymbolProvider(
+			new RhaiWorkspaceSymbolProvider(workspaceIndex)
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerFoldingRangeProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiFoldingRangeProvider()
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerSelectionRangeProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiSelectionRangeProvider()
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerReferenceProvider(
 			{ language: 'rhai', scheme: 'file' },

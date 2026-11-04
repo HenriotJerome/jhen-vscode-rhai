@@ -11,6 +11,7 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Complétion** : fonctions et constantes du fichier, fonctions natives de l'hôte (signature en détail), mots-clés ; après `alias::` les symboles publics du module importé ; dans `#{` les clés de map connues. Aucune proposition dans les commentaires et les chaînes
 - **Signature help** : déclenché sur `(` et `,`, détecte l'appel courant (fonction, méthode ou module), suit le paramètre actif par profondeur et sélectionne la surcharge native correspondant à l'arité
 - **Références, highlights et rename** : *Find All References* sur les fonctions, constantes et accès `alias::`, mise en évidence des occurrences dans le document, renommage (F2) sur tout le workspace — refusé pour les mots-clés, les fonctions fournies par l'hôte et les symboles ambigus
+- **Symboles, pliage et sélection** : `Ctrl+T` liste toutes les fonctions et constantes du workspace ; pliage des blocs, des régions `// region:` et des groupes d'imports ; sélection par niveaux (expression → instruction → bloc → fonction)
 
 ### 🔄 Changements
 

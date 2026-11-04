@@ -125,7 +125,13 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
-### 🔎 References, Highlights and Rename
+### �️ Workspace Symbols, Folding and Selection
+
+- **Go to Symbol in Workspace** (`Ctrl+T`): every function and constant of the project, filterable by name
+- **Folding**: blocks, `// region:` / `// endregion:` sections and consecutive import groups
+- **Selection ranges** (`Shift+Alt+→`): expression → statement → block → function
+
+### �🔎 References, Highlights and Rename
 
 - **Find All References** (`Shift+F12`) on a function, a constant or an `alias::name` access, across the whole workspace
 - **Document highlights**: every occurrence of the symbol under the cursor is highlighted in the current file

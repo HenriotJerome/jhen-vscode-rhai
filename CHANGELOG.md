@@ -11,6 +11,7 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **Completion**: functions and constants of the current file, host native functions (signature as detail), keywords; after `alias::` the public symbols of the imported module; inside `#{` the known map keys. Nothing is proposed inside comments and strings
 - **Signature help**: triggered on `(` and `,`, detects the current call (function, method or module), tracks the active parameter by depth and selects the host overload matching the arity
 - **References, highlights and rename**: *Find All References* on functions, constants and `alias::` accesses, occurrence highlighting in the document, rename (F2) across the workspace — refused for keywords, host-provided functions and ambiguous symbols
+- **Workspace symbols, folding and selection**: `Ctrl+T` lists every function and constant of the workspace; folding for blocks, `// region:` regions and import groups; level selection (expression → statement → block → function)
 
 ### 🔄 Changed
 

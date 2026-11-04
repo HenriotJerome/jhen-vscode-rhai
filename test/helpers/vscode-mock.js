@@ -222,6 +222,9 @@ function createVscodeMock() {
 			registerReferenceProvider() {},
 			registerDocumentHighlightProvider() {},
 			registerRenameProvider() {},
+			registerWorkspaceSymbolProvider() {},
+			registerFoldingRangeProvider() {},
+			registerSelectionRangeProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -245,6 +248,28 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		SymbolInformation: class SymbolInformation {
+			constructor(name, kind, containerName, location) {
+				this.name = name;
+				this.kind = kind;
+				this.containerName = containerName;
+				this.location = location;
+			}
+		},
+		FoldingRangeKind: { Comment: { value: 'comment' }, Imports: { value: 'imports' }, Region: { value: 'region' } },
+		FoldingRange: class FoldingRange {
+			constructor(start, end, kind) {
+				this.start = start;
+				this.end = end;
+				this.kind = kind;
+			}
+		},
+		SelectionRange: class SelectionRange {
+			constructor(range, parent) {
+				this.range = range;
+				this.parent = parent;
+			}
+		},
 		Location: class Location {
 			constructor(uri, range) {
 				this.uri = uri;
