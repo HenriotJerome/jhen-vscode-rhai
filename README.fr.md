@@ -125,6 +125,18 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 🩺 Diagnostics
+
+L'extension analyse vos scripts et signale les problèmes à la frappe (debounce 300 ms) :
+
+| Sévérité | Contrôles |
+|---|---|
+| **Erreur** | Chaîne non terminée, délimiteurs non appariés, `import` sans alias, erreurs de syntaxe |
+| **Avertissement** | Import, constante ou variable inutilisé, code inatteignable |
+| **Information** | Bloc de boucle vide, marqueurs `TODO` / `FIXME` |
+
+Des quick fixes sont proposés pour les imports inutilisés, l'alias manquant et les délimiteurs non fermés. Désactivable via `rhai.diagnostics.enable`.
+
 ### 📖 Documentation au survol (Hover)
 
 Survolez une fonction pour voir sa documentation instantanée avec un affichage enrichi :

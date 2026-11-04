@@ -88,6 +88,11 @@
 						"**/rhai-defs/api.d.rhai"
 					],
 					"description": "Fichiers .d.rhai de définitions des fonctions natives Rust (Ctrl+Click)"
+				},
+				"rhai.diagnostics.enable": {
+					"type": "boolean",
+					"default": true,
+					"description": "Active les diagnostics Rhai (erreurs de syntaxe, symboles inutilisés, code inatteignable)"
 				}
 			}
 		}

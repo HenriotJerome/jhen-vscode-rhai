@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { NativeApiIndex, registerNativeApiWatcher } from './host/nativeApi';
+import { RhaiCodeActionProvider } from './features/codeActions';
 import { RhaiDefinitionProvider } from './features/definition';
+import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
 import { RhaiHoverProvider } from './features/hover';
 import { RhaiDocumentSymbolProvider } from './features/symbols';
@@ -45,6 +47,15 @@ export function activate(context: vscode.ExtensionContext): void {
 		vscode.languages.registerHoverProvider(
 			{ language: 'rhai', scheme: 'file' },
 			hoverProvider
+		)
+	);
+
+	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiCodeActionProvider(),
+			{ providedCodeActionKinds: [vscode.CodeActionKind.QuickFix] }
 		)
 	);
 }

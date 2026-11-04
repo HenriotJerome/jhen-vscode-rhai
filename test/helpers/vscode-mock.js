@@ -160,6 +160,18 @@ function createVscodeMock() {
 				const noop = () => ({ dispose() {} });
 				return { onDidChange: noop, onDidCreate: noop, onDidDelete: noop, dispose() {} };
 			},
+			onDidOpenTextDocument() {
+				return { dispose() {} };
+			},
+			onDidChangeTextDocument() {
+				return { dispose() {} };
+			},
+			onDidSaveTextDocument() {
+				return { dispose() {} };
+			},
+			onDidCloseTextDocument() {
+				return { dispose() {} };
+			},
 			async openTextDocument(uri) {
 				return createDocument(uri.path);
 			},
@@ -203,7 +215,66 @@ function createVscodeMock() {
 			registerDocumentSymbolProvider() {},
 			registerDocumentFormattingEditProvider() {},
 			registerDefinitionProvider() {},
-			registerHoverProvider() {}
+			registerHoverProvider() {},
+			registerCodeActionsProvider() {},
+			createDiagnosticCollection(name) {
+				const store = new Map();
+				return {
+					name,
+					set(uri, diagnostics) {
+						store.set(uri.toString(), diagnostics);
+					},
+					get(uri) {
+						return store.get(uri.toString());
+					},
+					delete(uri) {
+						store.delete(uri.toString());
+					},
+					clear() {
+						store.clear();
+					},
+					dispose() {
+						store.clear();
+					}
+				};
+			}
+		},
+		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		Diagnostic: class Diagnostic {
+			constructor(range, message, severity) {
+				this.range = range;
+				this.message = message;
+				this.severity = severity;
+				this.code = undefined;
+				this.source = undefined;
+			}
+		},
+		CodeActionKind: {
+			QuickFix: { value: 'quickfix' },
+			Refactor: { value: 'refactor' },
+			Source: { value: 'source' }
+		},
+		CodeAction: class CodeAction {
+			constructor(title, kind) {
+				this.title = title;
+				this.kind = kind;
+				this.diagnostics = [];
+				this.edit = undefined;
+			}
+		},
+		WorkspaceEdit: class WorkspaceEdit {
+			constructor() {
+				this.operations = [];
+			}
+			delete(uri, range) {
+				this.operations.push({ type: 'delete', uri, range });
+			}
+			insert(uri, position, text) {
+				this.operations.push({ type: 'insert', uri, position, text });
+			}
+			replace(uri, range, text) {
+				this.operations.push({ type: 'replace', uri, range, text });
+			}
 		},
 		Hover: class Hover {
 			constructor(contents, range) {

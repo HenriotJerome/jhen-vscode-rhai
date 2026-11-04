@@ -4,6 +4,11 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 
 ## [Unreleased]
 
+### ✨ Ajouts
+
+- **Diagnostics** : erreurs de syntaxe (chaîne non terminée, délimiteurs non appariés, `import` sans alias), avertissements (import / constante / variable inutilisés, code inatteignable), informations (bloc vide, marqueurs `TODO`/`FIXME`) — désactivable via `rhai.diagnostics.enable`
+- **Quick fixes** : supprimer un import inutilisé, ajouter l'alias manquant, fermer un délimiteur
+
 ### 🔄 Changements
 
 - **Généricisation** : le badge du hover natif devient « 🔧 Fonction native (hôte) » — plus aucune référence à un hôte particulier

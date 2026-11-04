@@ -125,6 +125,18 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 🩺 Diagnostics
+
+The extension parses your scripts and reports problems as you type (300 ms debounce):
+
+| Severity | Checks |
+|---|---|
+| **Error** | Unterminated string, unbalanced delimiters, `import` without alias, syntax errors |
+| **Warning** | Unused import, unused constant, unused variable, unreachable code |
+| **Info** | Empty loop block, `TODO` / `FIXME` markers |
+
+Quick fixes are offered for unused imports, missing import aliases and unclosed delimiters. Disable everything with `rhai.diagnostics.enable`.
+
 ### 📖 Hover Documentation
 
 Hover over a function to see its documentation instantly with rich display:

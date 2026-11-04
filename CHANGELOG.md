@@ -4,6 +4,11 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 
 ## [Unreleased]
 
+### ✨ Added
+
+- **Diagnostics**: syntax errors (unterminated string, unbalanced delimiters, `import` without alias), warnings (unused import / constant / variable, unreachable code), information (empty block, `TODO`/`FIXME` markers) — can be disabled with `rhai.diagnostics.enable`
+- **Quick fixes**: remove an unused import, add the missing alias, close a delimiter
+
 ### 🔄 Changed
 
 - **Genericisation**: the native hover badge becomes "🔧 Fonction native (hôte)" — no host-specific reference left
