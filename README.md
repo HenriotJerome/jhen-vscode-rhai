@@ -125,6 +125,10 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### ✍️ Signature Help
+
+While typing a call, `(` and `,` open the parameter list: the current parameter is highlighted, nested calls are handled, and host overloads are picked by arity. Works for local functions, methods (`value.len(`), imported modules (`u::compute(`) and host functions.
+
 ### 💡 Completion
 
 | Context | Suggestions |

@@ -6,6 +6,7 @@ import { RhaiDefinitionProvider } from './features/definition';
 import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
 import { RhaiHoverProvider } from './features/hover';
+import { RhaiSignatureHelpProvider } from './features/signatureHelp';
 import { RhaiDocumentSymbolProvider } from './features/symbols';
 
 export { RhaiDefinitionProvider } from './features/definition';
@@ -52,6 +53,14 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerSignatureHelpProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiSignatureHelpProvider(nativeApi),
+			'(',
+			','
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerCompletionItemProvider(
 			{ language: 'rhai', scheme: 'file' },

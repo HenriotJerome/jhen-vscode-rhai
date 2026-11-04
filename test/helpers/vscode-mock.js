@@ -218,6 +218,7 @@ function createVscodeMock() {
 			registerHoverProvider() {},
 			registerCodeActionsProvider() {},
 			registerCompletionItemProvider() {},
+			registerSignatureHelpProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -241,6 +242,26 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		SignatureHelp: class SignatureHelp {
+			constructor() {
+				this.signatures = [];
+				this.activeSignature = 0;
+				this.activeParameter = 0;
+			}
+		},
+		SignatureInformation: class SignatureInformation {
+			constructor(label, documentation) {
+				this.label = label;
+				this.documentation = documentation;
+				this.parameters = [];
+			}
+		},
+		ParameterInformation: class ParameterInformation {
+			constructor(label, documentation) {
+				this.label = label;
+				this.documentation = documentation;
+			}
+		},
 		CompletionItemKind: { Text: 0, Method: 1, Function: 2, Field: 4, Variable: 5, Class: 6, Module: 8, Keyword: 13, Constant: 20 },
 		CompletionItem: class CompletionItem {
 			constructor(label, kind) {

@@ -9,6 +9,7 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **Diagnostics**: syntax errors (unterminated string, unbalanced delimiters, `import` without alias), warnings (unused import / constant / variable, unreachable code), information (empty block, `TODO`/`FIXME` markers) — can be disabled with `rhai.diagnostics.enable`
 - **Quick fixes**: remove an unused import, add the missing alias, close a delimiter
 - **Completion**: functions and constants of the current file, host native functions (signature as detail), keywords; after `alias::` the public symbols of the imported module; inside `#{` the known map keys. Nothing is proposed inside comments and strings
+- **Signature help**: triggered on `(` and `,`, detects the current call (function, method or module), tracks the active parameter by depth and selects the host overload matching the arity
 
 ### 🔄 Changed
 

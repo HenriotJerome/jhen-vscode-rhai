@@ -125,6 +125,10 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### ✍️ Signature help
+
+Pendant la saisie d'un appel, `(` et `,` ouvrent la liste des paramètres : le paramètre courant est mis en évidence, les appels imbriqués sont gérés et les surcharges de l'hôte sont choisies par arité. Fonctionne pour les fonctions locales, les méthodes (`valeur.len(`), les modules importés (`u::compute(`) et les fonctions de l'hôte.
+
 ### 💡 Complétion
 
 | Contexte | Suggestions |
