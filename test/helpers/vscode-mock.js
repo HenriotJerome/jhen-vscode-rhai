@@ -57,6 +57,7 @@ function globToRegExp(glob) {
 
 function createVscodeMock() {
 	const files = new Map();
+	const diagnosticCollections = [];
 	const settings = {
 		'navigation.searchSubdirectories': true,
 		'navigation.nativeApi': ['**/rhai-defs/api.json'],
@@ -74,6 +75,22 @@ function createVscodeMock() {
 		settings['navigation.nativeDefinitions'] = ['**/rhai-defs/api.d.rhai'];
 	}
 
+	function languageIdOf(filePath) {
+		if (filePath.endsWith('.rhai')) {
+			return 'rhai';
+		}
+		if (filePath.endsWith('.json')) {
+			return 'json';
+		}
+		if (filePath.endsWith('.md')) {
+			return 'markdown';
+		}
+		if (filePath.endsWith('.ts')) {
+			return 'typescript';
+		}
+		return 'plaintext';
+	}
+
 	function createDocument(filePath) {
 		const content = files.get(filePath);
 		if (content === undefined) {
@@ -84,6 +101,7 @@ function createVscodeMock() {
 
 		return {
 			uri: new Uri(filePath),
+			languageId: languageIdOf(filePath),
 			lineCount: lines.length,
 			lineAt(lineOrPosition) {
 				const index = typeof lineOrPosition === 'number' ? lineOrPosition : lineOrPosition.line;
@@ -231,7 +249,7 @@ function createVscodeMock() {
 			registerOnTypeFormattingEditProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
-				return {
+				const collection = {
 					name,
 					set(uri, diagnostics) {
 						store.set(uri.toString(), diagnostics);
@@ -249,6 +267,8 @@ function createVscodeMock() {
 						store.clear();
 					}
 				};
+				diagnosticCollections.push(collection);
+				return collection;
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
@@ -419,7 +439,7 @@ function createVscodeMock() {
 		};
 	}
 
-	return { vscode, files, settings, setFile, reset, createDocument, install };
+	return { vscode, files, settings, diagnosticCollections, setFile, reset, createDocument, install };
 }
 
 module.exports = { createVscodeMock, Position, Range, Uri };

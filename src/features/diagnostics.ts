@@ -328,11 +328,19 @@ function diagnosticsEnabled(): boolean {
 	return vscode.workspace.getConfiguration('rhai').get<boolean>('diagnostics.enable', true);
 }
 
+export function isRhaiDocument(document: vscode.TextDocument): boolean {
+	return document.languageId === 'rhai' || document.uri.path.endsWith('.rhai');
+}
+
 export class RhaiDiagnosticsProvider implements vscode.Disposable {
 	private readonly collection = vscode.languages.createDiagnosticCollection('rhai');
 	private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
 	refresh(document: vscode.TextDocument): void {
+		if (!isRhaiDocument(document)) {
+			return;
+		}
+
 		const key = document.uri.toString();
 		const pending = this.timers.get(key);
 		if (pending) {
@@ -348,7 +356,7 @@ export class RhaiDiagnosticsProvider implements vscode.Disposable {
 	}
 
 	update(document: vscode.TextDocument): void {
-		if (!diagnosticsEnabled()) {
+		if (!isRhaiDocument(document) || !diagnosticsEnabled()) {
 			this.collection.delete(document.uri);
 			return;
 		}

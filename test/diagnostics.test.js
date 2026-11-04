@@ -8,7 +8,7 @@ const { createVscodeMock } = require('./helpers/vscode-mock');
 const mock = createVscodeMock();
 mock.install();
 
-const { computeDiagnostics } = require('../out/features/diagnostics.js');
+const { computeDiagnostics, isRhaiDocument, RhaiDiagnosticsProvider } = require('../out/features/diagnostics.js');
 
 function codes(text) {
 	return computeDiagnostics(text).map((issue) => issue.code);
@@ -113,4 +113,31 @@ test('les positions sont en base zéro et cohérentes', () => {
 
 	assert.strictEqual(issue.range.start.line, 2);
 	assert.strictEqual(issue.range.start.character, 4);
+});
+
+test('seuls les documents Rhai sont diagnostiqués', () => {
+	mock.setFile('d:/proj/main.rhai', 'fn f() {\n}\n');
+	mock.setFile('d:/proj/data.json', '{ "a": 1 }\n');
+	mock.setFile('d:/proj/notes.md', 'fn f( }\n');
+
+	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/main.rhai')), true);
+	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/data.json')), false);
+	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/notes.md')), false);
+});
+
+test('aucun diagnostic n est publié sur un fichier non Rhai', () => {
+	const provider = new RhaiDiagnosticsProvider();
+	const collection = mock.diagnosticCollections[mock.diagnosticCollections.length - 1];
+
+	const jsonDocument = mock.createDocument('d:/proj/data.json');
+	provider.update(jsonDocument);
+
+	assert.strictEqual(collection.get(jsonDocument.uri), undefined);
+
+	const rhaiDocument = mock.createDocument('d:/proj/main.rhai');
+	provider.update(rhaiDocument);
+
+	assert.ok(Array.isArray(collection.get(rhaiDocument.uri)));
+
+	provider.dispose();
 });
