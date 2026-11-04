@@ -2,6 +2,21 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.2.2] - 2026-11-04
+
+### 🔄 Changements
+
+- **Compatibilité élargie** : `engines.vscode` redescend de `^1.144.0` à `^1.126.0` — l'extension redevient installable dans les éditeurs dérivés de VS Code restés en 1.126 (Devin/Windsurf, VSCodium…)
+- **`@types/vscode`** aligné sur `~1.125.0` (la 1.126.0 n'existe pas sur DefinitelyTyped)
+- **Installation** : la méthode principale pointe désormais vers Open VSX
+- **Publication** : `npm run publish` cible Open VSX ; le Marketplace Microsoft reste disponible via `npm run publish:marketplace`
+
+### 🐛 Corrections
+
+- La 2026.2.1 était marquée incompatible et n'apparaissait pas comme mise à jour dans les éditeurs antérieurs à la version 1.144
+
+---
+
 ## [2026.2.1] - 2026-11-04
 
 ### ✨ Ajouts
