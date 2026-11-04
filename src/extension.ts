@@ -1,11 +1,15 @@
 import * as vscode from 'vscode';
 import { NativeApiIndex, registerNativeApiWatcher } from './host/nativeApi';
+import { registerWorkspaceIndexWatchers, WorkspaceIndex } from './core/workspaceIndex';
 import { RhaiCodeActionProvider } from './features/codeActions';
 import { RhaiCompletionProvider } from './features/completion';
 import { RhaiDefinitionProvider } from './features/definition';
+import { RhaiDocumentHighlightProvider } from './features/documentHighlight';
 import { registerDiagnostics } from './features/diagnostics';
 import { RhaiFormattingProvider } from './features/formatting';
 import { RhaiHoverProvider } from './features/hover';
+import { RhaiReferenceProvider } from './features/references';
+import { RhaiRenameProvider } from './features/rename';
 import { RhaiSignatureHelpProvider } from './features/signatureHelp';
 import { RhaiDocumentSymbolProvider } from './features/symbols';
 
@@ -18,7 +22,9 @@ export { RhaiDocumentSymbolProvider } from './features/symbols';
 
 export function activate(context: vscode.ExtensionContext): void {
 	const nativeApi = new NativeApiIndex();
+	const workspaceIndex = new WorkspaceIndex();
 	context.subscriptions.push(registerNativeApiWatcher(nativeApi));
+	context.subscriptions.push(registerWorkspaceIndexWatchers(workspaceIndex));
 
 	const symbolProvider = new RhaiDocumentSymbolProvider();
 	context.subscriptions.push(
@@ -53,6 +59,24 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(registerDiagnostics());
+	context.subscriptions.push(
+		vscode.languages.registerReferenceProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiReferenceProvider(workspaceIndex)
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerDocumentHighlightProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiDocumentHighlightProvider()
+		)
+	);
+	context.subscriptions.push(
+		vscode.languages.registerRenameProvider(
+			{ language: 'rhai', scheme: 'file' },
+			new RhaiRenameProvider(workspaceIndex, nativeApi)
+		)
+	);
 	context.subscriptions.push(
 		vscode.languages.registerSignatureHelpProvider(
 			{ language: 'rhai', scheme: 'file' },

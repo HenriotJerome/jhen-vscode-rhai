@@ -219,6 +219,9 @@ function createVscodeMock() {
 			registerCodeActionsProvider() {},
 			registerCompletionItemProvider() {},
 			registerSignatureHelpProvider() {},
+			registerReferenceProvider() {},
+			registerDocumentHighlightProvider() {},
+			registerRenameProvider() {},
 			createDiagnosticCollection(name) {
 				const store = new Map();
 				return {
@@ -242,6 +245,19 @@ function createVscodeMock() {
 			}
 		},
 		DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 },
+		Location: class Location {
+			constructor(uri, range) {
+				this.uri = uri;
+				this.range = range;
+			}
+		},
+		DocumentHighlightKind: { Text: 0, Read: 1, Write: 2 },
+		DocumentHighlight: class DocumentHighlight {
+			constructor(range, kind) {
+				this.range = range;
+				this.kind = kind;
+			}
+		},
 		SignatureHelp: class SignatureHelp {
 			constructor() {
 				this.signatures = [];

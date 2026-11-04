@@ -219,6 +219,8 @@ export interface MemberExpr {
 	kind: 'member';
 	receiver: Expr;
 	name: string;
+	separator: '.' | '::';
+	nameRange: Range;
 	range: Range;
 }
 
@@ -286,6 +288,7 @@ export interface FunctionDecl {
 	doc: string[];
 	line: number;
 	range: Range;
+	nameRange: Range;
 	visibility: Visibility;
 }
 
@@ -295,6 +298,7 @@ export interface ConstDecl {
 	doc: string[];
 	line: number;
 	range: Range;
+	nameRange: Range;
 }
 
 export interface ParseError {

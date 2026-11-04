@@ -125,6 +125,12 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 🔎 Références, highlights et rename
+
+- **Rechercher toutes les références** (`Maj+F12`) sur une fonction, une constante ou un accès `alias::nom`, dans tout le workspace
+- **Mise en évidence** : toutes les occurrences du symbole sous le curseur sont surlignées dans le fichier courant
+- **Renommage** (`F2`) réécrit toutes les occurrences, dans tous les fichiers, y compris les accès `alias::nom`. Refusé pour les mots-clés, les fonctions fournies par l'hôte et les noms déclarés plusieurs fois
+
 ### ✍️ Signature help
 
 Pendant la saisie d'un appel, `(` et `,` ouvrent la liste des paramètres : le paramètre courant est mis en évidence, les appels imbriqués sont gérés et les surcharges de l'hôte sont choisies par arité. Fonctionne pour les fonctions locales, les méthodes (`valeur.len(`), les modules importés (`u::compute(`) et les fonctions de l'hôte.

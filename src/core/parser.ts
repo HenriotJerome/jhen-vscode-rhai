@@ -160,6 +160,7 @@ export class Parser {
 			doc,
 			line: start.line,
 			visibility,
+			nameRange: { start: tokenStart(name), end: tokenEnd(name) },
 			range: { start: tokenStart(start), end: body.range.end }
 		};
 	}
@@ -213,6 +214,7 @@ export class Parser {
 			value,
 			doc,
 			line: start.line,
+			nameRange: { start: tokenStart(name), end: tokenEnd(name) },
 			range: { start: tokenStart(start), end: tokenEnd(name) }
 		};
 	}
@@ -618,6 +620,8 @@ export class Parser {
 					kind: 'member',
 					receiver: expression,
 					name: name.value,
+					separator: separator === '::' ? '::' : '.',
+					nameRange: { start: tokenStart(name), end: tokenEnd(name) },
 					range: { start: expression.range.start, end: tokenEnd(name) }
 				};
 				continue;

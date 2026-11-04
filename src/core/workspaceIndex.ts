@@ -11,6 +11,7 @@ export interface SymbolRef {
 	kind: SymbolKind;
 	line: number;
 	range: Range;
+	nameRange: Range;
 	doc: string[];
 }
 
@@ -129,6 +130,7 @@ export class WorkspaceIndex {
 				kind: 'function',
 				line: declaration.line,
 				range: declaration.range,
+				nameRange: declaration.nameRange,
 				doc: declaration.doc
 			});
 		}
@@ -140,6 +142,7 @@ export class WorkspaceIndex {
 				kind: 'constant',
 				line: declaration.line,
 				range: declaration.range,
+				nameRange: declaration.nameRange,
 				doc: declaration.doc
 			});
 		}
@@ -165,12 +168,17 @@ export class WorkspaceIndex {
 
 	private collectIdentifiers(uri: vscode.Uri, ast: ModuleAst): void {
 		const visit = (expr: Expr): void => {
-			if (expr.kind !== 'ident') {
+			if (expr.kind === 'ident') {
+				const occurrences = this.identifiers.get(expr.name) ?? [];
+				occurrences.push({ uri, name: expr.name, range: expr.range });
+				this.identifiers.set(expr.name, occurrences);
 				return;
 			}
-			const occurrences = this.identifiers.get(expr.name) ?? [];
-			occurrences.push({ uri, name: expr.name, range: expr.range });
-			this.identifiers.set(expr.name, occurrences);
+			if (expr.kind === 'member' && expr.separator === '::') {
+				const occurrences = this.identifiers.get(expr.name) ?? [];
+				occurrences.push({ uri, name: expr.name, range: expr.nameRange });
+				this.identifiers.set(expr.name, occurrences);
+			}
 		};
 
 		for (const statement of ast.statements) {

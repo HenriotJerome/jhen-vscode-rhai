@@ -125,6 +125,12 @@ engine
 std::fs::write("rhai-defs/api.json", engine.gen_fn_metadata_to_json(false)?)?;
 ```
 
+### 🔎 References, Highlights and Rename
+
+- **Find All References** (`Shift+F12`) on a function, a constant or an `alias::name` access, across the whole workspace
+- **Document highlights**: every occurrence of the symbol under the cursor is highlighted in the current file
+- **Rename** (`F2`) rewrites every occurrence, in every file, including `alias::name` accesses. Refused for keywords, host-provided functions and names declared more than once
+
 ### ✍️ Signature Help
 
 While typing a call, `(` and `,` open the parameter list: the current parameter is highlighted, nested calls are handled, and host overloads are picked by arity. Works for local functions, methods (`value.len(`), imported modules (`u::compute(`) and host functions.
