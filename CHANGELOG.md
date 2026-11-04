@@ -10,12 +10,14 @@ All notable changes to the **vscode-rhai-support** extension are documented here
 - **Extended cross-file navigation**: Ctrl+Click on a function or constant not found in the current file searches for its definition in every `.rhai` file of the workspace
 - **Navigation to imported constants**: `p::MY_CONSTANT` now opens its definition in the imported module, not only functions
 - **New `rhai.navigation.searchSubdirectories` setting** (enabled by default) to disable these recursive searches
+- **Unit tests**: `npm test` runs 8 navigation tests through Node's built-in `node:test` runner (no added dependency)
 
 ### 🔄 Changed
 
 - **Dependency updates**: TypeScript 7.0.2, `@vscode/vsce` 4.1.0, `@types/vscode` 1.144.0, `@types/node` 26.6.6
 - **Requirement**: VS Code **1.144** minimum (`engines.vscode`)
 - **Shared code**: module path resolution is now shared between the DefinitionProvider and the HoverProvider (no more duplication)
+- **`.vscodeignore`**: `test/`, `.gitignore` and `.vsix` files are no longer bundled into the published extension
 
 ### 🐛 Fixed
 

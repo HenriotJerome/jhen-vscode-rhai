@@ -10,12 +10,14 @@ Tous les changements notables de l'extension **vscode-rhai-support** sont docume
 - **Navigation inter-fichiers étendue** : Ctrl+Click sur une fonction ou une constante introuvable dans le fichier courant cherche sa définition dans tous les fichiers `.rhai` du workspace
 - **Navigation vers les constantes importées** : `p::MA_CONSTANTE` ouvre désormais sa définition dans le module importé, et plus seulement les fonctions
 - **Nouveau réglage `rhai.navigation.searchSubdirectories`** (activé par défaut) pour désactiver ces recherches récursives
+- **Tests unitaires** : `npm test` exécute 8 tests de navigation via le runner natif `node:test` (aucune dépendance ajoutée)
 
 ### 🔄 Changements
 
 - **Mise à jour des dépendances** : TypeScript 7.0.2, `@vscode/vsce` 4.1.0, `@types/vscode` 1.144.0, `@types/node` 26.6.6
 - **Prérequis** : VS Code **1.144** minimum (`engines.vscode`)
 - **Code factorisé** : la résolution des chemins de modules est partagée entre le DefinitionProvider et le HoverProvider (plus de duplication)
+- **`.vscodeignore`** : `test/`, `.gitignore` et les fichiers `.vsix` ne sont plus embarqués dans l'extension publiée
 
 ### 🐛 Corrections
 

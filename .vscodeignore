@@ -1,0 +1,5 @@
+# Dev-only files, never shipped in the packaged extension
+.gitignore
+.vscode/**
+test/**
+*.vsix

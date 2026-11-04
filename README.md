@@ -201,6 +201,7 @@ Or via the UI:
 cd vscode-rhai
 npm install
 npm run compile
+npm test        # unit tests (node:test, no extra dependency)
 # Press F5 to launch in VS Code
 ```
 
