@@ -33,6 +33,18 @@ jobs:
       - name: Package
         run: npm run package
 
+      - name: Check the Open VSX token
+        shell: bash
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${OVSX_PAT:-}" ]; then
+            echo "::error::The OVSX_PAT secret is missing. Add it in Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "OVSX_PAT is configured."
+
       - name: Publish to Open VSX
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
