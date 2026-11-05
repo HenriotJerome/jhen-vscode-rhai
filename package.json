@@ -2,7 +2,7 @@
 	"name": "vscode-rhai-support",
 	"displayName": "Rhai highlighting, outline and language configuration",
 	"description": "Syntax highlighting, outline and language configuration for Rhai scripts",
-	"version": "2026.4.3",
+	"version": "2026.4.4",
 	"publisher": "jhenriotaliaslemeran81",
 	"author": {
 		"name": "jhenriot alias lemeran81"

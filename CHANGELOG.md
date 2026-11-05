@@ -2,6 +2,15 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.4] - 2026-11-05
+
+### 🔄 Changed
+
+- CI: the test script uses `node --test "test/*.test.js"` so it runs on Node 22 as well as Node 26; the GitHub actions were upgraded to their current majors (checkout@v7, setup-node@v7, upload-artifact@v7, action-gh-release@v3)
+- CI: `ovsx` is now a devDependency, so the release workflow no longer downloads it on the fly
+
+---
+
 ## [2026.4.3] - 2026-11-05
 
 ### 🐛 Fixed
