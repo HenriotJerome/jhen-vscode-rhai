@@ -105,7 +105,9 @@ function signatureFromFunction(declaration: FunctionDecl): vscode.SignatureInfor
 		(param) => new vscode.ParameterInformation(param.type ? `${param.name}: ${param.type}` : param.name)
 	);
 	if (declaration.doc.length > 0) {
-		signature.documentation = new vscode.MarkdownString(renderDocumentation(declaration.doc));
+		signature.documentation = new vscode.MarkdownString(
+			`**🟢 ${declaration.name}()**\n\n${renderDocumentation(declaration.doc)}`
+		);
 	}
 	return signature;
 }
@@ -160,7 +162,7 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 			);
 			if (overload.docComments && overload.docComments.length > 0) {
 				signature.documentation = new vscode.MarkdownString(
-					renderDocumentation(overload.docComments)
+					`**🔧 Fonction native (hôte)** · \`${call.name}\`\n\n${renderDocumentation(overload.docComments)}`
 				);
 			}
 			return signature;
