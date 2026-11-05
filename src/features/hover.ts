@@ -54,8 +54,8 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 			const hoverContent = new vscode.MarkdownString();
 			hoverContent.appendMarkdown(`**📦 Module \`${moduleName}\`**\n\n`);
 			hoverContent.appendMarkdown(`${doc}\n\n`);
-			hoverContent.appendMarkdown(`---  \n`);
-			hoverContent.appendMarkdown(`🔗 *Module* \`${moduleName}\``);
+			hoverContent.appendMarkdown(`---\n`);
+			hoverContent.appendMarkdown(`*Module importé*`);
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
@@ -75,8 +75,8 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 				const hoverContent = new vscode.MarkdownString();
 				hoverContent.appendMarkdown(`**🟢 ${word}()**\n\n`);
 				hoverContent.appendMarkdown(`${doc}\n\n`);
-				hoverContent.appendMarkdown(`---  \n`);
-				hoverContent.appendMarkdown(`🔗 *Importée depuis* \`${moduleName}\``);
+				hoverContent.appendMarkdown(`---\n`);
+				hoverContent.appendMarkdown(`*Importée depuis \`${moduleName}\`*`);
 				return new vscode.Hover(hoverContent, wordRange);
 			}
 			return null;
@@ -87,15 +87,14 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		if (userFunctionDoc) {
 			const declaration = parse(document.getText()).functions.find((fn) => fn.name === word);
 			const hoverContent = new vscode.MarkdownString();
+			hoverContent.appendMarkdown(`**🟢 ${word}()**\n\n`);
 			if (declaration) {
 				hoverContent.appendMarkdown(`${signatureBlock(declaration)}\n\n`);
-			} else {
-				hoverContent.appendMarkdown(`**${word}()**\n\n`);
 			}
 			hoverContent.appendMarkdown(`${userFunctionDoc}\n\n`);
 			hoverContent.appendMarkdown(`---\n`);
 			hoverContent.appendMarkdown(
-				declaration ? `🟢 *Fichier courant · ligne ${declaration.line + 1}*` : '🟢 *Fichier courant*'
+				declaration ? `*Fichier courant · ligne ${declaration.line + 1}*` : '*Fichier courant*'
 			);
 			return new vscode.Hover(hoverContent, wordRange);
 		}
@@ -112,10 +111,10 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		if (this.nativeFunctions.has(word)) {
 			const hoverContent = new vscode.MarkdownString();
 			hoverContent.appendMarkdown(`**🔷 ${word}()**\n\n`);
-			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**  \n`);
-			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.  \n\n`);
-			hoverContent.appendMarkdown(`---  \n`);
-			hoverContent.appendMarkdown(`[📖 Voir la documentation →](https://rhai.rs/book "Ouvrir rhai.rs/book")`);
+			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**\n\n`);
+			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.\n\n`);
+			hoverContent.appendMarkdown(`---\n`);
+			hoverContent.appendMarkdown(`[📖 Voir la documentation →](https://rhai.rs/book)`);
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 

@@ -3,6 +3,7 @@ import { FunctionDecl } from '../core/ast';
 import { tokenize } from '../core/lexer';
 import { parse } from '../core/parser';
 import { NativeApiIndex } from '../host/nativeApi';
+import { renderDocumentation } from '../utils/documentation';
 import { resolveModuleUri } from '../utils/modules';
 
 export interface CallContext {
@@ -104,7 +105,7 @@ function signatureFromFunction(declaration: FunctionDecl): vscode.SignatureInfor
 		(param) => new vscode.ParameterInformation(param.type ? `${param.name}: ${param.type}` : param.name)
 	);
 	if (declaration.doc.length > 0) {
-		signature.documentation = new vscode.MarkdownString(declaration.doc.join('\n'));
+		signature.documentation = new vscode.MarkdownString(renderDocumentation(declaration.doc));
 	}
 	return signature;
 }
@@ -158,7 +159,9 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 				(param) => new vscode.ParameterInformation(param.type ? `${param.name ?? '_'}: ${param.type}` : param.name ?? '_')
 			);
 			if (overload.docComments && overload.docComments.length > 0) {
-				signature.documentation = new vscode.MarkdownString(overload.docComments.join('\n'));
+				signature.documentation = new vscode.MarkdownString(
+					renderDocumentation(overload.docComments)
+				);
 			}
 			return signature;
 		});

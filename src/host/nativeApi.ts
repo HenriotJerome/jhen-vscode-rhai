@@ -118,11 +118,11 @@ export class NativeApiIndex {
 		}
 
 		const parts: string[] = [
+			`**🔧 Fonction native (hôte)** · \`${name}\``,
+			'',
 			'```rhai',
 			...overloads.map((overload) => `fn ${overload.signature}`),
-			'```',
-			'',
-			`**🔧 Fonction native (hôte)** · \`${name}\``
+			'```'
 		];
 
 		const seen = new Set<string>();

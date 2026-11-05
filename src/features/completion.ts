@@ -4,6 +4,7 @@ import { tokenize } from '../core/lexer';
 import { parse } from '../core/parser';
 import { walkBlock, walkExpr, walkStmt } from '../core/walk';
 import { NativeApiIndex } from '../host/nativeApi';
+import { renderDocumentation } from '../utils/documentation';
 import { resolveModuleUri } from '../utils/modules';
 
 const KEYWORDS = [
@@ -48,8 +49,7 @@ function documentationOf(doc: string[]): vscode.MarkdownString | undefined {
 	if (doc.length === 0) {
 		return undefined;
 	}
-	const markdown = new vscode.MarkdownString(doc.join('\n'));
-	return markdown;
+	return new vscode.MarkdownString(renderDocumentation(doc));
 }
 
 function collectMapKeys(ast: ModuleAst): MapEntry[] {
