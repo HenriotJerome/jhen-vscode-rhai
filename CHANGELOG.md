@@ -2,6 +2,16 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.6] - 2026-11-05
+
+### 🔄 Changed
+
+- Hover cards restyled: the signature is a fenced `rhai` code block, section titles are bold instead of Markdown headings, bullets are normalised (`•`, em dash) and doc tags are italic
+- The `isAlreadyFormatted` shortcut was removed — it returned the raw doc as soon as a single bullet was present, which left `# Arguments` as a giant heading
+- The script-function card now shows the declaration line in its footer, and host cards use the same code block
+
+---
+
 ## [2026.4.5] - 2026-11-05
 
 ### 🔄 Changed

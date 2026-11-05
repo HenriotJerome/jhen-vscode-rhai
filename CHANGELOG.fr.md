@@ -2,6 +2,16 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.6] - 2026-11-05
+
+### 🔄 Changements
+
+- Cartes de survol retravaillées : la signature est un bloc de code `rhai`, les titres de section sont en gras au lieu de titres Markdown, les puces sont normalisées (`•`, tiret cadratin) et les tags de doc en italique
+- Le raccourci `isAlreadyFormatted` est supprimé — il renvoyait la doc brute dès qu'une puce était présente, laissant `# Arguments` en titre géant
+- La carte d'une fonction de script affiche la ligne de déclaration en pied, et les cartes d'hôte utilisent le même bloc de code
+
+---
+
 ## [2026.4.5] - 2026-11-05
 
 ### 🔄 Changements
