@@ -96,7 +96,10 @@ export function findCallContext(text: string, offset: number): CallContext | und
 	return undefined;
 }
 
-function signatureFromFunction(declaration: FunctionDecl): vscode.SignatureInformation {
+function signatureFromFunction(
+	declaration: FunctionDecl,
+	origin = `Fichier courant · ligne ${declaration.line + 1}`
+): vscode.SignatureInformation {
 	const params = declaration.params.map((param) =>
 		param.type ? `${param.name}: ${param.type}` : param.name
 	);
@@ -106,18 +109,18 @@ function signatureFromFunction(declaration: FunctionDecl): vscode.SignatureInfor
 	);
 	if (declaration.doc.length > 0) {
 		signature.documentation = new vscode.MarkdownString(
-			`**🟢 ${declaration.name}()**\n\n${largerHeadings(renderDocumentation(declaration.doc))}`
+			[
+				`**🟢 ${declaration.name}()**`,
+				'',
+				renderDocumentation(declaration.doc),
+				'',
+				'---',
+				'',
+				`*${origin}*`
+			].join('\n')
 		);
 	}
 	return signature;
-}
-
-/**
- * The parameter hints widget renders its documentation smaller than the hover.
- * Markdown headings are the only way to raise the visual weight from the API.
- */
-function largerHeadings(markdown: string): string {
-	return markdown.replace(/^\*\*(.+?)\*\*$/gm, '### $1');
 }
 
 export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
@@ -170,7 +173,15 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 			);
 			if (overload.docComments && overload.docComments.length > 0) {
 				signature.documentation = new vscode.MarkdownString(
-					`**🔧 Fonction native (hôte)** · \`${call.name}\`\n\n${largerHeadings(renderDocumentation(overload.docComments))}`
+					[
+						`**🔧 Fonction native (hôte)** · \`${call.name}\``,
+						'',
+						renderDocumentation(overload.docComments),
+						'',
+						'---',
+						'',
+						"*Fonction fournie par l'hôte*"
+					].join('\n')
 				);
 			}
 			return signature;
@@ -213,7 +224,7 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 		}
 
 		const help = new vscode.SignatureHelp();
-		help.signatures = [signatureFromFunction(target)];
+		help.signatures = [signatureFromFunction(target, `Importée depuis \`${call.qualifier}\``)];
 		help.activeSignature = 0;
 		help.activeParameter = Math.min(call.activeParameter, Math.max(target.params.length - 1, 0));
 		return help;
