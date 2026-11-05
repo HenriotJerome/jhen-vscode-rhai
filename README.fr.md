@@ -65,8 +65,8 @@ Naviguez rapidement dans votre code Rhai, même entre fichiers :
 
 - **Ctrl+Click** (ou **F12**) sur un nom de fonction → saute à sa définition `fn nom()`
 - **Ctrl+Click** sur une constante → saute à sa définition `const NOM`
-- **Ctrl+Click** sur `module::fonction` (ex: `p::get_equipement`) → ouvre le fichier importé et saute à la définition
-- **Ctrl+Click** sur un alias d'import (ex: `p` dans `import "personnage" as p;`) → ouvre le fichier module
+- **Ctrl+Click** sur `module::fonction` (ex: `u::get_value`) → ouvre le fichier importé et saute à la définition
+- **Ctrl+Click** sur un alias d'import (ex: `u` dans `import "utils" as u;`) → ouvre le fichier module
 - **Ctrl+Click** sur un alias utilisé (ex: `p::` dans le code) → ouvre le fichier module
 - **Ctrl+Click** sur un nom introuvable dans le fichier courant → cherche dans tous les fichiers `.rhai` du workspace
 - Supporte les imports via `import "fichier" as alias`
@@ -74,11 +74,11 @@ Naviguez rapidement dans votre code Rhai, même entre fichiers :
 
 **Exemple :**
 ```rust
-import "personnage" as p;
+import "utils" as u;
 
-// Ctrl+Click sur p → ouvre personnage.rhai
-// Ctrl+Click sur get_equipement → ouvre personnage.rhai à la définition
-let equipement = p::get_equipement(personnage);
+// Ctrl+Click sur u → ouvre utils.rhai
+// Ctrl+Click sur get_value → ouvre utils.rhai à la définition
+let valeur = u::get_value(entree);
 ```
 
 ### 🔧 Fonctions fournies par l'hôte
@@ -206,12 +206,12 @@ Survolez une fonction pour voir sa documentation instantanée avec un affichage 
 
 **Exemple :**
 ```rust
-// Dans personnage.rhai :
-/// Calcule les points de vie d'un personnage
+// Dans utils.rhai :
+/// Calcule une valeur dérivée
 ///
 /// # Arguments
 /// * `constitution` - Valeur de constitution (8-18)
-/// * `niveau` - Niveau du personnage (1-20)
+/// * `facteur` - Facteur multiplicateur
 ///
 /// # Returns
 /// Nombre de points de vie calculés
@@ -220,13 +220,13 @@ fn calculer_pv(constitution, niveau) {
 }
 
 // Dans un autre fichier :
-import "personnage" as p;
+import "utils" as u;
 
 // Survoler p::calculer_pv() affiche :
 // 🟢 calculer_pv()
-// Calcule les points de vie d'un personnage
+// Calcule une valeur dérivée
 // ...
-// 🔗 Importée depuis personnage
+// 🔗 Importée depuis utils
 let pv = p::calculer_pv(12, 3);
 ```
 
@@ -340,7 +340,7 @@ fn [Tab]  → Génère une fonction avec documentation
 ## Exemple de code coloré
 
 ```rust
-//! Module de gestion des personnages
+//! Module utilitaire
 
 // region: Types
 
@@ -351,13 +351,13 @@ const CLASSE_GUERRIER = #{
 
 // endregion: Types
 
-/// Crée un nouveau personnage
+/// Crée une nouvelle entrée
 ///
 /// # Arguments
 ///
-/// * `nom` - Nom du personnage
+/// * `nom` - Nom de l'entrée
 /// * `classe` - Clé de la classe
-fn creer_personnage(
+fn creer_entree(
 	nom,
 	classe,
 ) {
