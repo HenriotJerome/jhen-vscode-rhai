@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2026.4.6-blue.svg)
+![Version](https://img.shields.io/badge/version-2026.4.7-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![VS Code](https://img.shields.io/badge/VS%20Code-1.126+-orange.svg)
 [![Open VSX](https://img.shields.io/open-vsx/v/jhenriotaliaslemeran81/vscode-rhai-support)](https://open-vsx.org/extension/jhenriotaliaslemeran81/vscode-rhai-support)
@@ -298,14 +298,14 @@ Or search for **Rhai** in the Extensions view (Ctrl+Shift+X) — works in VSCodi
 ### Method 2: VSIX File
 
 ```bash
-code --install-extension vscode-rhai-support-2026.4.6.vsix
+code --install-extension vscode-rhai-support-2026.4.7.vsix
 ```
 
 Or via the UI:
 1. Open **Extensions** (Ctrl+Shift+X)
 2. Click `...` (more actions)
 3. **Install from VSIX...**
-4. Select `vscode-rhai-support-2026.4.6.vsix`
+4. Select `vscode-rhai-support-2026.4.7.vsix`
 
 ### Method 3: Local Development
 

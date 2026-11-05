@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { renderDocumentation } from '../utils/documentation';
 
 export interface NativeFunctionParam {
 	name?: string;
@@ -71,42 +72,6 @@ async function collectFiles(globs: string[]): Promise<vscode.Uri[]> {
 	return files;
 }
 
-function formatNativeDoc(doc: string): string[] {
-	const formatted: string[] = [];
-
-	for (const raw of doc.split(/\r?\n/)) {
-		const line = raw.trimEnd();
-		const trimmed = line.trim();
-
-		if (trimmed.length === 0) {
-			formatted.push('');
-			continue;
-		}
-
-		if (/^#+\s*Arguments$/i.test(trimmed)) {
-			formatted.push('**Arguments**');
-			continue;
-		}
-		if (/^#+\s*Returns$/i.test(trimmed)) {
-			formatted.push('**Returns**');
-			continue;
-		}
-		if (/^#+\s*\S/.test(trimmed)) {
-			formatted.push(`**${trimmed.replace(/^#+\s*/, '')}**`);
-			continue;
-		}
-		if (/^\*\s+\S/.test(trimmed)) {
-			const content = trimmed.replace(/^\*\s+/, '').replace(/^(`[^`]+`)\s*-\s*/, '$1 — ');
-			formatted.push(`• ${content}`);
-			continue;
-		}
-
-		formatted.push(line);
-	}
-
-	return formatted.map((line) => (line.length > 0 ? `${line}  ` : line));
-}
-
 export class NativeApiIndex {
 	private functions = new Map<string, NativeFunction[]>();
 	private locations = new Map<string, NativeDefinitionLocation[]>();
@@ -153,13 +118,11 @@ export class NativeApiIndex {
 		}
 
 		const parts: string[] = [
-			`### 🔧 ${name}()`,
-			'',
-			'**🔧 Fonction native (hôte)**',
-			'',
 			'```rhai',
 			...overloads.map((overload) => `fn ${overload.signature}`),
-			'```'
+			'```',
+			'',
+			`**🔧 Fonction native (hôte)** · \`${name}\``
 		];
 
 		const seen = new Set<string>();
@@ -169,7 +132,7 @@ export class NativeApiIndex {
 				continue;
 			}
 			seen.add(doc);
-			parts.push('', '---', '', ...formatNativeDoc(doc));
+			parts.push('', '---', '', renderDocumentation(doc.split('\n')));
 		}
 
 		return parts.join('\n');

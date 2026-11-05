@@ -109,7 +109,7 @@ test('buildHover expose signatures, arguments et retour', async () => {
 	assert.ok(hover.includes('regle_active(cle: string, valeur: string) -> bool'));
 	assert.ok(hover.includes('**Arguments**'));
 	assert.ok(hover.includes('**Returns**'));
-	assert.ok(hover.includes('`cle` : Clé ou nom affiché de la règle.'));
+	assert.ok(hover.includes('Clé ou nom affiché de la règle'));
 	assert.strictEqual(index.buildHover('inconnu'), undefined);
 });
 

@@ -3,6 +3,7 @@ import { FunctionDecl } from '../core/ast';
 import { parse } from '../core/parser';
 import { NativeApiIndex } from '../host/nativeApi';
 import { resolveModuleUri } from '../utils/modules';
+import { renderDocumentation } from '../utils/documentation';
 import { escapeRegExp } from '../utils/text';
 
 function signatureBlock(declaration: FunctionDecl): string {
@@ -86,16 +87,15 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		if (userFunctionDoc) {
 			const declaration = parse(document.getText()).functions.find((fn) => fn.name === word);
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.appendMarkdown(`### 🟢 ${word}()\n\n`);
 			if (declaration) {
 				hoverContent.appendMarkdown(`${signatureBlock(declaration)}\n\n`);
+			} else {
+				hoverContent.appendMarkdown(`**${word}()**\n\n`);
 			}
 			hoverContent.appendMarkdown(`${userFunctionDoc}\n\n`);
-			hoverContent.appendMarkdown(`---  \n`);
+			hoverContent.appendMarkdown(`---\n`);
 			hoverContent.appendMarkdown(
-				declaration
-					? `*Fonction définie dans ce fichier · ligne ${declaration.line + 1}*`
-					: '*Fonction définie dans ce fichier*'
+				declaration ? `🟢 *Fichier courant · ligne ${declaration.line + 1}*` : '🟢 *Fichier courant*'
 			);
 			return new vscode.Hover(hoverContent, wordRange);
 		}
@@ -258,7 +258,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		}
 
 		if (docs.length > 0) {
-			return this.formatDocumentation(docs);
+			return renderDocumentation(docs);
 		}
 
 		return null;
@@ -300,7 +300,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 				}
 
 				if (docs.length > 0) {
-					return this.formatDocumentation(docs);
+					return renderDocumentation(docs);
 				}
 
 				return null;
@@ -314,54 +314,6 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 	 * Format documentation with markdown styling
 	 */
 	private formatDocumentation(docs: string[]): string {
-		const formatted: string[] = [];
-		let inCodeBlock = false;
-
-		for (const raw of docs) {
-			const line = raw.trimEnd();
-
-			if (line.trimStart().startsWith('```')) {
-				inCodeBlock = !inCodeBlock;
-				formatted.push(line);
-				continue;
-			}
-
-			if (inCodeBlock) {
-				formatted.push(line);
-				continue;
-			}
-
-			if (line.trim().length === 0) {
-				formatted.push('');
-				continue;
-			}
-
-			const text = line.trim();
-
-			// Doc tags (@see, @param, ...) → italic
-			if (/^@[A-Za-z]+/.test(text)) {
-				formatted.push(`*${text}*  `);
-				continue;
-			}
-
-			// Headings → bold section titles
-			const heading = text.match(/^#+\s*(.+)$/);
-			if (heading) {
-				formatted.push(`**${heading[1].trim()}**  `);
-				continue;
-			}
-
-			// Bullets: `name` - description → • `name` — description
-			const bullet = text.match(/^[*-]\s+(.+)$/);
-			if (bullet) {
-				const content = bullet[1].replace(/^(`[^`]+`)\s*-\s*/, '$1 — ');
-				formatted.push(`• ${content}  `);
-				continue;
-			}
-
-			formatted.push(`${text}  `);
-		}
-
-		return formatted.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd();
+		return renderDocumentation(docs);
 	}
 }

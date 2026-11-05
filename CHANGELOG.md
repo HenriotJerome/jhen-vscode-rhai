@@ -2,6 +2,15 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.7] - 2026-11-05
+
+### 🔄 Changed
+
+- Hover cards rebuilt: the signature comes first as a code block, parameters are rendered as a table (`| Paramètre | Description |`), the return is a compact line, and doc tags (`@see`) are isolated in italic
+- Section titles are plain bold text, no heading, no emoji prefix
+
+---
+
 ## [2026.4.6] - 2026-11-05
 
 ### 🔄 Changed

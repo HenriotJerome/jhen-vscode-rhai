@@ -2,6 +2,15 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.7] - 2026-11-05
+
+### 🔄 Changements
+
+- Cartes de survol reconstruites : la signature arrive en premier sous forme de bloc de code, les paramètres sont rendus en tableau (`| Paramètre | Description |`), le retour tient sur une ligne et les tags de doc (`@see`) sont isolés en italique
+- Les titres de section sont en gras simple, sans titre Markdown ni préfixe emoji
+
+---
+
 ## [2026.4.6] - 2026-11-05
 
 ### 🔄 Changements
