@@ -52,7 +52,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		if (importAliasDoc) {
 			const { doc, moduleName } = importAliasDoc;
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.appendMarkdown(`### 📦 ${moduleName}\n\n`);
+			hoverContent.appendMarkdown(`**📦 Module \`${moduleName}\`**\n\n`);
 			hoverContent.appendMarkdown(`${doc}\n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
 			hoverContent.appendMarkdown(`🔗 *Module* \`${moduleName}\``);
@@ -73,7 +73,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 			if (importedDoc) {
 				const { doc, moduleName } = importedDoc;
 				const hoverContent = new vscode.MarkdownString();
-				hoverContent.appendMarkdown(`### 🟢 ${word}()\n\n`);
+				hoverContent.appendMarkdown(`**🟢 ${word}()**\n\n`);
 				hoverContent.appendMarkdown(`${doc}\n\n`);
 				hoverContent.appendMarkdown(`---  \n`);
 				hoverContent.appendMarkdown(`🔗 *Importée depuis* \`${moduleName}\``);
@@ -111,7 +111,7 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		// Fallback: built-in Rhai function
 		if (this.nativeFunctions.has(word)) {
 			const hoverContent = new vscode.MarkdownString();
-			hoverContent.appendMarkdown(`### 🔷 ${word}()\n\n`);
+			hoverContent.appendMarkdown(`**🔷 ${word}()**\n\n`);
 			hoverContent.appendMarkdown(`**✨ Fonction native Rhai**  \n`);
 			hoverContent.appendMarkdown(`Fonction intégrée au langage Rhai.  \n\n`);
 			hoverContent.appendMarkdown(`---  \n`);

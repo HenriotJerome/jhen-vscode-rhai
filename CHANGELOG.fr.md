@@ -2,6 +2,14 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.8] - 2026-11-05
+
+### 🔄 Changements
+
+- Toutes les cartes de survol partagent la même mise en page : plus de titres `###`, le badge devient une ligne en gras (`**📦 Module**`, `**🟢 nom()**`, `**🔷 nom()**`, `**🔧 Fonction native (hôte)**`), et chaque carte se termine par un séparateur unique et une ligne d'origine en italique
+
+---
+
 ## [2026.4.7] - 2026-11-05
 
 ### 🔄 Changements

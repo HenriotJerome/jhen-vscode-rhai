@@ -2,6 +2,14 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.8] - 2026-11-05
+
+### 🔄 Changed
+
+- All hover cards share the same layout: no more `###` headings, the badge is a bold line (`**📦 Module**`, `**🟢 name()**`, `**🔷 name()**`, `**🔧 Fonction native (hôte)**`), and every card ends with a single separator and an italic origin line
+
+---
+
 ## [2026.4.7] - 2026-11-05
 
 ### 🔄 Changed
