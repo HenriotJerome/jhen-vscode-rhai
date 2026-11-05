@@ -97,10 +97,10 @@ Les fonctions enregistrées par une application hôte (`engine.register_fn`, `#[
 
 fn greet(name: string) -> string
 
-📥 Arguments
+**Arguments**
 • `name` : Nom de la personne à saluer.
 
-📤 Returns
+**Returns**
 Un message de salutation.
 ```
 

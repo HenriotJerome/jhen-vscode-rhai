@@ -88,8 +88,8 @@ test("affiche la documentation fournie par l'hôte avec toutes les surcharges", 
 	assert.ok(markdown.includes('Fonction native (hôte)'));
 	assert.ok(markdown.includes('regle_active(cle: string) -> bool'));
 	assert.ok(markdown.includes('regle_active(cle: string, valeur: string) -> bool'));
-	assert.ok(markdown.includes('📥 Arguments'));
-	assert.ok(markdown.includes('📤 Returns'));
+	assert.ok(markdown.includes('**Arguments**'));
+	assert.ok(markdown.includes('**Returns**'));
 });
 
 test("la documentation de l'hôte prime sur le hover générique", async () => {

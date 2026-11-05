@@ -84,11 +84,11 @@ function formatNativeDoc(doc: string): string[] {
 		}
 
 		if (/^#+\s*Arguments$/i.test(trimmed)) {
-			formatted.push('**📥 Arguments**');
+			formatted.push('**Arguments**');
 			continue;
 		}
 		if (/^#+\s*Returns$/i.test(trimmed)) {
-			formatted.push('**📤 Returns**');
+			formatted.push('**Returns**');
 			continue;
 		}
 		if (/^#+\s*\S/.test(trimmed)) {
@@ -96,7 +96,8 @@ function formatNativeDoc(doc: string): string[] {
 			continue;
 		}
 		if (/^\*\s+\S/.test(trimmed)) {
-			formatted.push(`• ${trimmed.replace(/^\*\s+/, '')}`);
+			const content = trimmed.replace(/^\*\s+/, '').replace(/^(`[^`]+`)\s*-\s*/, '$1 — ');
+			formatted.push(`• ${content}`);
 			continue;
 		}
 
@@ -156,7 +157,9 @@ export class NativeApiIndex {
 			'',
 			'**🔧 Fonction native (hôte)**',
 			'',
-			...overloads.map((overload) => `\`fn ${overload.signature}\``)
+			'```rhai',
+			...overloads.map((overload) => `fn ${overload.signature}`),
+			'```'
 		];
 
 		const seen = new Set<string>();

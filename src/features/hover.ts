@@ -1,7 +1,16 @@
 import * as vscode from 'vscode';
+import { FunctionDecl } from '../core/ast';
+import { parse } from '../core/parser';
 import { NativeApiIndex } from '../host/nativeApi';
 import { resolveModuleUri } from '../utils/modules';
 import { escapeRegExp } from '../utils/text';
+
+function signatureBlock(declaration: FunctionDecl): string {
+	const params = declaration.params.map((param) =>
+		param.type ? `${param.name}: ${param.type}` : param.name
+	);
+	return ['```rhai', `fn ${declaration.name}(${params.join(', ')})`, '```'].join('\n');
+}
 
 
 export class RhaiHoverProvider implements vscode.HoverProvider {
@@ -75,11 +84,19 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 		// Check for user-defined function with documentation in current file
 		const userFunctionDoc = this.findFunctionDocumentation(document, word);
 		if (userFunctionDoc) {
+			const declaration = parse(document.getText()).functions.find((fn) => fn.name === word);
 			const hoverContent = new vscode.MarkdownString();
 			hoverContent.appendMarkdown(`### 🟢 ${word}()\n\n`);
+			if (declaration) {
+				hoverContent.appendMarkdown(`${signatureBlock(declaration)}\n\n`);
+			}
 			hoverContent.appendMarkdown(`${userFunctionDoc}\n\n`);
 			hoverContent.appendMarkdown(`---  \n`);
-			hoverContent.appendMarkdown(`*Fonction définie dans ce fichier*`);
+			hoverContent.appendMarkdown(
+				declaration
+					? `*Fonction définie dans ce fichier · ligne ${declaration.line + 1}*`
+					: '*Fonction définie dans ce fichier*'
+			);
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
@@ -297,70 +314,54 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 	 * Format documentation with markdown styling
 	 */
 	private formatDocumentation(docs: string[]): string {
-		// Check if already formatted (contains emojis added by this formatter)
-		const isAlreadyFormatted = docs.some(doc =>
-			doc.includes('📌') || doc.includes('•')
-		);
-		if (isAlreadyFormatted) {
-			return docs.join('\n');
-		}
-
 		const formatted: string[] = [];
 		let inCodeBlock = false;
 
-		for (let i = 0; i < docs.length; i++) {
-			const line = docs[i];
+		for (const raw of docs) {
+			const line = raw.trimEnd();
 
-			// Toggle code block state
-			if (line.startsWith('```')) {
+			if (line.trimStart().startsWith('```')) {
 				inCodeBlock = !inCodeBlock;
 				formatted.push(line);
 				continue;
 			}
 
-			// Inside code block: preserve line as-is
 			if (inCodeBlock) {
 				formatted.push(line);
 				continue;
 			}
 
-			// Empty line: preserve it
-			if (!line.trim()) {
-				formatted.push(line);
+			if (line.trim().length === 0) {
+				formatted.push('');
 				continue;
 			}
 
-			let formattedLine = line;
+			const text = line.trim();
 
-			// Format # Headers → **📌 Header** (skip 📌 if header already has an emoji)
-			if (formattedLine.startsWith('#')) {
-				const headerText = formattedLine.replace(/^#+\s*/, '');
-				const hasEmoji = /\p{Emoji}/u.test(headerText);
-				if (hasEmoji) {
-					formattedLine = formattedLine.replace(/^#+\s*/, '**').replace(/$/, '**');
-				} else {
-					formattedLine = formattedLine.replace(/^#+\s*/, '**📌 ').replace(/$/, '**');
-				}
-			}
-			// Format * bullet points → • `name` - description
-			else if (formattedLine.startsWith('* ')) {
-				const paramMatch = formattedLine.match(/^\*\s*`?([^`]+)`?\s*-\s*(.+)$/);
-				if (paramMatch) {
-					const [, paramName, description] = paramMatch;
-					formattedLine = `• \`${paramName}\` - ${description}`;
-				} else {
-					formattedLine = '• ' + formattedLine.substring(2);
-				}
-			}
-			// Format - bullet points → • item
-			else if (formattedLine.startsWith('- ')) {
-				formattedLine = '• ' + formattedLine.substring(2);
+			// Doc tags (@see, @param, ...) → italic
+			if (/^@[A-Za-z]+/.test(text)) {
+				formatted.push(`*${text}*  `);
+				continue;
 			}
 
-			// Add trailing spaces to force markdown line break
-			formatted.push(formattedLine + '  ');
+			// Headings → bold section titles
+			const heading = text.match(/^#+\s*(.+)$/);
+			if (heading) {
+				formatted.push(`**${heading[1].trim()}**  `);
+				continue;
+			}
+
+			// Bullets: `name` - description → • `name` — description
+			const bullet = text.match(/^[*-]\s+(.+)$/);
+			if (bullet) {
+				const content = bullet[1].replace(/^(`[^`]+`)\s*-\s*/, '$1 — ');
+				formatted.push(`• ${content}  `);
+				continue;
+			}
+
+			formatted.push(`${text}  `);
 		}
 
-		return formatted.join('\n');
+		return formatted.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd();
 	}
 }

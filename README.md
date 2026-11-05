@@ -97,10 +97,10 @@ Functions registered by a host application (`engine.register_fn`, `#[export_modu
 
 fn greet(name: string) -> string
 
-📥 Arguments
+**Arguments**
 • `name` : Name of the person to greet.
 
-📤 Returns
+**Returns**
 A greeting message.
 ```
 
