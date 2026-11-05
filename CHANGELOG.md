@@ -2,6 +2,14 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.3] - 2026-11-05
+
+### 🐛 Fixed
+
+- The lexer swallowed the range operator: `0..n` was read as the number `0.` followed by `.n`, so every range lost its operator and the right-hand side became a member access. `for i in 0..n` now parses as a range, and a variable used only inside a range is no longer reported as unused.
+
+---
+
 ## [2026.4.2] - 2026-11-04
 
 ### 🐛 Fixed

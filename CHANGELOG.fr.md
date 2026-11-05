@@ -2,6 +2,14 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.3] - 2026-11-05
+
+### 🐛 Corrections
+
+- Le lexer avalait l'opérateur de plage : `0..n` était lu comme le nombre `0.` suivi de `.n`, donc chaque plage perdait son opérateur et le membre de droite devenait un accès de propriété. `for i in 0..n` est désormais parsé comme une plage, et une variable utilisée uniquement dans une plage n'est plus signalée comme inutilisée.
+
+---
+
 ## [2026.4.2] - 2026-11-04
 
 ### 🐛 Corrections
