@@ -99,6 +99,19 @@ export class RhaiHoverProvider implements vscode.HoverProvider {
 			return new vscode.Hover(hoverContent, wordRange);
 		}
 
+		// Check for a constant declared in the current file
+		const constant = parse(document.getText()).constants.find((item) => item.name === word);
+		if (constant) {
+			const hoverContent = new vscode.MarkdownString();
+			hoverContent.appendMarkdown(`**🔵 ${word}**\n\n`);
+			hoverContent.appendMarkdown(`\`\`\`rhai\n${document.lineAt(constant.line).text.trim()}\n\`\`\`\n\n`);
+			if (constant.doc.length > 0) {
+				hoverContent.appendMarkdown(`${renderDocumentation(constant.doc)}\n\n`);
+			}
+			hoverContent.appendMarkdown(`---\n*Constante du fichier courant · ligne ${constant.line + 1}*`);
+			return new vscode.Hover(hoverContent, wordRange);
+		}
+
 		// Check for a native Rust function exposed by the project API
 		const nativeHover = this.nativeApi.buildHover(word);
 		if (nativeHover) {
