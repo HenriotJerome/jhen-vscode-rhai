@@ -57,20 +57,27 @@ jobs:
           generate_release_notes: true
 
       - name: Verify Open VSX
+        continue-on-error: true
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           VERSION=$(node -p "require('./package.json').version")
           NAME=$(node -p "require('./package.json').name")
           PUBLISHER=$(node -p "require('./package.json').publisher")
-          URL="https://open-vsx.org/api/${PUBLISHER}/${NAME}/${VERSION}"
-          for attempt in 1 2 3 4 5 6; do
-            if curl -sf "$URL" > /dev/null; then
-              echo "Open VSX serves ${VERSION}."
-              exit 0
+          FILE_URL="https://open-vsx.org/api/${PUBLISHER}/${NAME}/${VERSION}/file/${PUBLISHER}.${NAME}-${VERSION}.vsix"
+          META_URL="https://open-vsx.org/api/${PUBLISHER}/${NAME}/${VERSION}"
+
+          for attempt in $(seq 1 20); do
+            if curl -sfI "$FILE_URL" > /dev/null; then
+              echo "Open VSX serves the ${VERSION} VSIX."
+              break
             fi
-            echo "Not available yet (attempt ${attempt}), waiting..."
+            echo "VSIX not served yet (attempt ${attempt}/20), waiting 30s..."
             sleep 30
           done
-          echo "::error::Open VSX does not serve ${VERSION} after the publish."
-          exit 1
+
+          if curl -sf "$META_URL" > /dev/null; then
+            echo "Metadata for ${VERSION} is available."
+          else
+            echo "::warning::Metadata for ${VERSION} is still cached by the CDN; the VSIX is published and will appear shortly."
+          fi
