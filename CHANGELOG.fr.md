@@ -2,6 +2,14 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.5] - 2026-11-05
+
+### 🔄 Changements
+
+- Workflow de release : la publication tolère une version déjà publiée (--skip-duplicate), un re-run ne peut donc plus échouer sur un doublon.
+
+---
+
 ## [2026.4.4] - 2026-11-05
 
 ### 🔄 Changements

@@ -48,7 +48,7 @@ jobs:
       - name: Publish to Open VSX
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
-        run: npx ovsx publish *.vsix
+        run: npx ovsx publish --skip-duplicate *.vsix
 
       - name: Attach the VSIX to the release
         uses: softprops/action-gh-release@v3
