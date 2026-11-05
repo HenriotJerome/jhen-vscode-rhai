@@ -106,10 +106,18 @@ function signatureFromFunction(declaration: FunctionDecl): vscode.SignatureInfor
 	);
 	if (declaration.doc.length > 0) {
 		signature.documentation = new vscode.MarkdownString(
-			`**🟢 ${declaration.name}()**\n\n${renderDocumentation(declaration.doc)}`
+			`**🟢 ${declaration.name}()**\n\n${largerHeadings(renderDocumentation(declaration.doc))}`
 		);
 	}
 	return signature;
+}
+
+/**
+ * The parameter hints widget renders its documentation smaller than the hover.
+ * Markdown headings are the only way to raise the visual weight from the API.
+ */
+function largerHeadings(markdown: string): string {
+	return markdown.replace(/^\*\*(.+?)\*\*$/gm, '### $1');
 }
 
 export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
@@ -162,7 +170,7 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 			);
 			if (overload.docComments && overload.docComments.length > 0) {
 				signature.documentation = new vscode.MarkdownString(
-					`**🔧 Fonction native (hôte)** · \`${call.name}\`\n\n${renderDocumentation(overload.docComments)}`
+					`**🔧 Fonction native (hôte)** · \`${call.name}\`\n\n${largerHeadings(renderDocumentation(overload.docComments))}`
 				);
 			}
 			return signature;
