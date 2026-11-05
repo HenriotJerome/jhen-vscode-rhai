@@ -119,10 +119,12 @@ test('seuls les documents Rhai sont diagnostiqués', () => {
 	mock.setFile('d:/proj/main.rhai', 'fn f() {\n}\n');
 	mock.setFile('d:/proj/data.json', '{ "a": 1 }\n');
 	mock.setFile('d:/proj/notes.md', 'fn f( }\n');
+	mock.setFile('d:/proj/rhai-defs/api.d.rhai', 'module static;\nfn natif(x: int) -> int;\n');
 
 	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/main.rhai')), true);
 	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/data.json')), false);
 	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/notes.md')), false);
+	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/rhai-defs/api.d.rhai')), false);
 });
 
 test('une variable utilisée dans une plage n est pas signalée', () => {

@@ -329,6 +329,10 @@ function diagnosticsEnabled(): boolean {
 }
 
 export function isRhaiDocument(document: vscode.TextDocument): boolean {
+	// Declaration files only hold signatures, they are not compilable scripts
+	if (document.uri.path.endsWith('.d.rhai')) {
+		return false;
+	}
 	return document.languageId === 'rhai' || document.uri.path.endsWith('.rhai');
 }
 
