@@ -125,8 +125,21 @@ test('seuls les documents Rhai sont diagnostiqués', () => {
 	assert.strictEqual(isRhaiDocument(mock.createDocument('d:/proj/notes.md')), false);
 });
 
-test('aucun diagnostic n est publié sur un fichier non Rhai', () => {
-	const provider = new RhaiDiagnosticsProvider();
+test('une variable utilisée dans une plage n est pas signalée', () => {
+	const issues = computeDiagnostics([
+		'fn f(n) {',
+		'    let resultat = [1, 2, 3];',
+		'    let a_garder = if n < resultat.len { n } else { resultat.len };',
+		'\tfor i in 0..a_garder {',
+		'\t\tprint(i);',
+		'\t}',
+		'}'
+	].join('\n'));
+
+	assert.deepStrictEqual(issues.filter((issue) => issue.code === 'unused-variable'), []);
+});
+
+test('aucun diagnostic n est publié sur un fichier non Rhai', () => {	const provider = new RhaiDiagnosticsProvider();
 	const collection = mock.diagnosticCollections[mock.diagnosticCollections.length - 1];
 
 	const jsonDocument = mock.createDocument('d:/proj/data.json');

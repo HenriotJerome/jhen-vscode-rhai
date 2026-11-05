@@ -175,7 +175,9 @@ export function tokenize(text: string): Token[] {
 				while (end < text.length && (isDigit(text[end]) || text[end] === '_')) {
 					end++;
 				}
-				if (text[end] === '.') {
+				// Only treat '.' as a decimal point when a digit follows, so that
+				// the range operator '0..n' is not swallowed as the number '0.'
+				if (text[end] === '.' && isDigit(text[end + 1] ?? '')) {
 					end++;
 					while (end < text.length && (isDigit(text[end]) || text[end] === '_')) {
 						end++;

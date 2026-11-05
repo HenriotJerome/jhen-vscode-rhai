@@ -78,3 +78,21 @@ test('suivi des lignes et des colonnes', () => {
 	assert.strictEqual(tokens[3].line, 1);
 	assert.strictEqual(tokens[3].column, 2);
 });
+
+test('ne confond pas la plage 0..n avec un nombre décimal', () => {
+	const tokens = tokenize('for i in 0..a_garder { }');
+
+	assert.deepStrictEqual(
+		tokens.slice(0, 6).map((token) => `${token.kind}:${token.value}`),
+		['keyword:for', 'ident:i', 'keyword:in', 'number:0', 'punct:..', 'ident:a_garder']
+	);
+});
+
+test('conserve les nombres décimaux', () => {
+	const tokens = tokenize('3.14 0.5 1.');
+
+	assert.strictEqual(tokens[0].value, '3.14');
+	assert.strictEqual(tokens[1].value, '0.5');
+	assert.strictEqual(tokens[2].value, '1');
+	assert.strictEqual(tokens[3].value, '.');
+});
