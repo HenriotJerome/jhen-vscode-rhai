@@ -2,6 +2,23 @@
 
 All notable changes to the **vscode-rhai-support** extension are documented here.
 
+## [2026.4.9] - 2026-11-05
+
+### ✨ Added
+
+- **Constant hover card** (🔵): hovering a constant shows its declaration line, its documentation and its position, with the same layout as the other cards
+- **Custom UI Style documented**: the troubleshooting section explains how to widen the parameter hints popup
+
+### 🔄 Changed
+
+- The parameter hints card now emits exactly the same Markdown as the hover card (badge, signature code block, rendered documentation, separator, italic origin) — verified byte for byte
+
+### 🐛 Fixed
+
+- **`.d.rhai` files are no longer diagnosed**: they only hold signatures, so the diagnostics reported a syntax error on every declaration
+
+---
+
 ## [2026.4.8] - 2026-11-05
 
 ### 🔄 Changed

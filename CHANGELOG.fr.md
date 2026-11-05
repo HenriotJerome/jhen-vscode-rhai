@@ -2,6 +2,23 @@
 
 Tous les changements notables de l'extension **vscode-rhai-support** sont documentés ici.
 
+## [2026.4.9] - 2026-11-05
+
+### ✨ Ajouts
+
+- **Carte de survol pour les constantes** (🔵) : ligne de déclaration, documentation et position, avec la même mise en page que les autres cartes
+- **Custom UI Style documenté** : la section dépannage explique comment élargir la fenêtre d'aide aux paramètres
+
+### 🔄 Changements
+
+- La carte des paramètres émet désormais exactement le même Markdown que le survol (badge, bloc de code de signature, documentation rendue, séparateur, origine en italique) — vérifié octet pour octet
+
+### 🐛 Corrections
+
+- **Les fichiers `.d.rhai` ne sont plus diagnostiqués** : ils ne contiennent que des signatures, les diagnostics signalaient donc une erreur de syntaxe sur chaque déclaration
+
+---
+
 ## [2026.4.8] - 2026-11-05
 
 ### 🔄 Changements
