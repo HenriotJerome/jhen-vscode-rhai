@@ -387,6 +387,17 @@ import "utilitaires" as u;
 
 **Les fonctions de l'hôte n'apparaissent pas.** Lance **Rhai: Vérifier le contrat d'hôte** et lis le canal « Rhai » : il liste les artefacts trouvés, leur date et les incohérences entre `api.json` et `api.d.rhai`.
 
+**La fenêtre d'aide aux paramètres est plus étroite que le survol.** Cette fenêtre est le `parameter-hints-widget` de VS Code : sa largeur est plafonnée, elle n'est pas redimensionnable et aucune API d'extension ne permet de la modifier (voir [microsoft/vscode#124008](https://github.com/microsoft/vscode/issues/124008), fermée sans implémentation). La documentation qu'elle affiche est identique au survol, octet pour octet. Pour aligner les deux, installe [Custom CSS and JS Loader](https://marketplace.visualstudio.com/items?itemName=be5invis.vscode-custom-css) et ajoute :
+
+```css
+.parameter-hints-widget .phwrapper {
+  max-width: 900px !important;
+}
+.parameter-hints-widget .docs {
+  font-size: var(--vscode-editor-font-size) !important;
+}
+```
+
 ## Licence
 
 MIT — jhenriot alias lemeran81

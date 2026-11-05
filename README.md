@@ -387,6 +387,17 @@ import "utilities" as u;
 
 **Host functions do not appear.** Run **Rhai: Validate host contract** and read the "Rhai" output channel: it lists the artefacts found, their date and any mismatch between `api.json` and `api.d.rhai`.
 
+**The parameter hints popup is narrower than the hover.** That popup is VS Code's own `parameter-hints-widget`: its width is capped, it cannot be resized, and no extension API can change it (see [microsoft/vscode#124008](https://github.com/microsoft/vscode/issues/124008), closed without implementation). The documentation it displays is byte-identical to the hover card. To align both, install [Custom CSS and JS Loader](https://marketplace.visualstudio.com/items?itemName=be5invis.vscode-custom-css) and add:
+
+```css
+.parameter-hints-widget .phwrapper {
+  max-width: 900px !important;
+}
+.parameter-hints-widget .docs {
+  font-size: var(--vscode-editor-font-size) !important;
+}
+```
+
 ## License
 
 MIT — jhenriot alias lemeran81
