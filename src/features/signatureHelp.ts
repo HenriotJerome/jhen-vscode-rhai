@@ -112,10 +112,13 @@ function signatureFromFunction(
 			[
 				`**🟢 ${declaration.name}()**`,
 				'',
+				'```rhai',
+				`fn ${declaration.name}(${params.join(', ')})`,
+				'```',
+				'',
 				renderDocumentation(declaration.doc),
 				'',
 				'---',
-				'',
 				`*${origin}*`
 			].join('\n')
 		);
@@ -176,10 +179,13 @@ export class RhaiSignatureHelpProvider implements vscode.SignatureHelpProvider {
 					[
 						`**🔧 Fonction native (hôte)** · \`${call.name}\``,
 						'',
+						'```rhai',
+						`fn ${overload.signature}`,
+						'```',
+						'',
 						renderDocumentation(overload.docComments),
 						'',
 						'---',
-						'',
 						"*Fonction fournie par l'hôte*"
 					].join('\n')
 				);
